@@ -4,8 +4,11 @@ import blinkmatch.panels.BasePanel;
 import blinkmatch.panels.GamePanel;
 import blinkmatch.panels.HelpPanel;
 import blinkmatch.panels.StartPanel;
-import java.awt.*;
-import javax.swing.*;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import java.awt.CardLayout;
+import java.awt.Dimension;
 
 /**
  * Top-level JFrame that owns the CardLayout container.
