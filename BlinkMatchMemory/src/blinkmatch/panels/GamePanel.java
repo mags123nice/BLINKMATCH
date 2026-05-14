@@ -1,6 +1,7 @@
 package blinkmatch.panels;
 
 import blinkmatch.GameWindow;
+import blinkmatch.SoundPlayer;
 import blinkmatch.model.Card;
 import blinkmatch.model.GameState;
 import blinkmatch.model.Player;
@@ -8,9 +9,12 @@ import blinkmatch.weather.StormyWeather;
 import blinkmatch.weather.SunnyWeather;
 import blinkmatch.weather.Weather;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.sound.sampled.*;
 import javax.swing.*;
 
 /**
@@ -115,6 +119,20 @@ public class GamePanel extends BasePanel {
             }
         });
 
+        
+        try {         
+            Clip sound;
+            AudioInputStream audio = AudioSystem.getAudioInputStream(
+                    new File("src/resources/music/itty.wav"));
+            sound = AudioSystem.getClip();
+            
+            sound.open(audio);
+            sound.loop(Clip.LOOP_CONTINUOUSLY);
+            sound.start();
+
+        } catch (Exception e) {
+        }
+
         add(layeredPane, BorderLayout.CENTER);
         bindKeys();
 
@@ -174,7 +192,10 @@ public class GamePanel extends BasePanel {
             btn.setCursor(customHoverCursor);
 
             final int idx = i;
-            btn.addActionListener(e -> onCardClicked(idx));
+            btn.addActionListener(e -> {
+                SoundPlayer.playClickEffect();
+                onCardClicked(idx);
+            });
             cardButtons[i] = btn;
             gridPanel.add(btn);
         }
@@ -207,6 +228,7 @@ public class GamePanel extends BasePanel {
     private JPanel buildPauseMenu() {
         // GridBagLayout automatically centers contents inside the panel
         JPanel overlay = new JPanel(new GridBagLayout()); 
+        overlay.setBackground(Color.blue);
         overlay.setBackground(new Color(0, 0, 0)); // Semi-transparent black
         overlay.setVisible(false); // Hidden by default
 
