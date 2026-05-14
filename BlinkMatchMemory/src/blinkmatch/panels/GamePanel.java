@@ -50,26 +50,33 @@ public class GamePanel extends BasePanel {
 
     // ── Constants ────────────────────────────────────────────────────────────
     private static final ImageIcon[] SYMBOLS = {
-        new ImageIcon("src/resources/images/Avocado.png"),// Avocado
+        new ImageIcon("src/resources/images/Apple.png"),// 🍎
         new ImageIcon("src/resources/images/Banana.png"), // 🍌
-        new ImageIcon("src/resources/images/Mango.png"), // Mango
+        new ImageIcon("src/resources/images/Grapes.png"), // 🍇
         new ImageIcon("src/resources/images/StrawBerry.png"), // 🍓
         new ImageIcon("src/resources/images/Orange.png"), // 🍊
         new ImageIcon("src/resources/images/Lemon.png"), // 🍋
         new ImageIcon("src/resources/images/WaterMelon.png"), // 🍉
         new ImageIcon("src/resources/images/Peach.png"),  // 🍑
     };
-
+    
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
     private static final int GAME_TIME   = 60;
     private static final int STORM_TIME  = 30;   // seconds remaining when storm hits
 
-    // ── Colors ───────────────────────────────────────────────────────────────
-    private static final Color COLOR_FACE_DOWN  = new Color(239, 159, 39);
+    // ── CARDS ───────────────────────────────────────────────────────────────
+    int BACK_SIZE=225;
+    private static final ImageIcon Card_Back  = new ImageIcon("src/resources/images/cardback.png");
+    Image scaledCard = Card_Back.getImage().getScaledInstance(BACK_SIZE, BACK_SIZE, Image.SCALE_SMOOTH);
+    ImageIcon ICON_FACE_DOWN = new ImageIcon(scaledCard);
+
     private static final Color COLOR_FACE_UP    = Color.WHITE;
     private static final Color COLOR_MATCHED    = new Color(144, 238, 144);
-    private static final Color COLOR_STORM_DOWN = new Color(100, 149, 200);
+
+    private static final ImageIcon Storm_Back = new ImageIcon("src/resources/images/Avocado.png");
+    Image scaledStorm = Storm_Back.getImage().getScaledInstance(BACK_SIZE, BACK_SIZE, Image.SCALE_SMOOTH);
+    ImageIcon ICON_STORM_DOWN = new ImageIcon(scaledCard);
 
     // ════════════════════════════════════════════════════════════════════════
     public GamePanel(CardLayout cardLayout) {
@@ -165,9 +172,9 @@ public class GamePanel extends BasePanel {
         cardButtons = new JButton[GRID_SIZE];
 
         for (int i = 0; i < GRID_SIZE; i++) {
-            JButton btn = makeButton( new ImageIcon("src/resources/images/cardback.png"), 300, 300);
+            JButton btn = new JButton();
             btn.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 26));
-            btn.setBackground(COLOR_FACE_DOWN);
+            btn.setIcon(ICON_FACE_DOWN);
             btn.setOpaque(true);
             btn.setBorderPainted(true);
             btn.setFocusPainted(false);
@@ -326,7 +333,7 @@ public class GamePanel extends BasePanel {
     }
 
     private void buildCards() {
-    int CARD_SIZE = 70; // Adjust this number to fit your grid buttons
+    int CARD_SIZE = 150; // Adjust this number to fit your grid buttons
     List<ImageIcon> symbolsList = new ArrayList<>();
 
     for (ImageIcon rawIcon : SYMBOLS) {
@@ -351,7 +358,7 @@ public class GamePanel extends BasePanel {
             for (int i = 0; i < GRID_SIZE; i++) {
         // Make sure your Card constructor accepts (int, ImageIcon)
                cards [i] = new Card(i, symbolsList.get(i));
-                resetButtonVisual(i, COLOR_FACE_DOWN);
+                resetButtonVisual(i, ICON_FACE_DOWN);
             }
         }
     
@@ -419,7 +426,7 @@ public class GamePanel extends BasePanel {
         for (int i = 0; i < unmatchedIdx.size(); i++) {
             int idx = unmatchedIdx.get(i);
             cards[idx] = new Card(idx, unmatchedSym.get(i));
-            resetButtonVisual(idx, COLOR_STORM_DOWN);
+            resetButtonVisual(idx, ICON_STORM_DOWN);
         }
         flippedIndices.clear();
     }
@@ -474,8 +481,8 @@ public class GamePanel extends BasePanel {
             javax.swing.Timer delay = new javax.swing.Timer(700, e -> {
                 cards[i1].setFaceUp(false);
                 cards[i2].setFaceUp(false);
-                resetButtonVisual(i1, COLOR_FACE_DOWN);
-                resetButtonVisual(i2, COLOR_FACE_DOWN);
+                resetButtonVisual(i1, ICON_FACE_DOWN);
+                resetButtonVisual(i2, ICON_FACE_DOWN);
                 flippedIndices.clear();
                 
                 // Only allow flips again if the user hasn't paused the game during the delay!
@@ -490,10 +497,10 @@ public class GamePanel extends BasePanel {
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    private void resetButtonVisual(int idx, Color bg) {
+    private void resetButtonVisual(int idx, ImageIcon bg) {
         cardButtons[idx].setText("");
         cardButtons[idx].setIcon(null); 
-        cardButtons[idx].setBackground(bg);
+        cardButtons[idx].setIcon(bg);
         cardButtons[idx].setEnabled(true);
     }
 
