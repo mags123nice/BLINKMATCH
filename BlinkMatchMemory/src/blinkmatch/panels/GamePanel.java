@@ -49,15 +49,15 @@ public class GamePanel extends BasePanel {
     private boolean stormTriggered = false;
 
     // ── Constants ────────────────────────────────────────────────────────────
-    private static final String[] SYMBOLS = {
-        "\uD83C\uDF4E", // 🍎
-        "\uD83C\uDF4C", // 🍌
-        "\uD83C\uDF47", // 🍇
-        "\uD83C\uDF53", // 🍓
-        "\uD83C\uDF4A", // 🍊
-        "\uD83C\uDF4B", // 🍋
-        "\uD83C\uDF49", // 🍉
-        "\uD83C\uDF51"  // 🍑
+    private static final ImageIcon[] SYMBOLS = {
+        new ImageIcon("src/resources/images/Avocado.png"),// Avocado
+        new ImageIcon("src/resources/images/Banana.png"), // 🍌
+        new ImageIcon("src/resources/images/Mango.png"), // Mango
+        new ImageIcon("src/resources/images/StrawBerry.png"), // 🍓
+        new ImageIcon("src/resources/images/Orange.png"), // 🍊
+        new ImageIcon("src/resources/images/Lemon.png"), // 🍋
+        new ImageIcon("src/resources/images/WaterMelon.png"), // 🍉
+        new ImageIcon("src/resources/images/Peach.png"),  // 🍑
     };
 
     private static final int TOTAL_PAIRS = 8;
@@ -326,16 +326,35 @@ public class GamePanel extends BasePanel {
     }
 
     private void buildCards() {
-        List<String> symbols = new ArrayList<>();
-        for (String s : SYMBOLS) { symbols.add(s); symbols.add(s); }
-        Collections.shuffle(symbols);
+    int CARD_SIZE = 70; // Adjust this number to fit your grid buttons
+    List<ImageIcon> symbolsList = new ArrayList<>();
 
-        cards = new Card[GRID_SIZE];
-        for (int i = 0; i < GRID_SIZE; i++) {
-            cards[i] = new Card(i, symbols.get(i));   // encapsulated Card objects
-            resetButtonVisual(i, COLOR_FACE_DOWN);
-        }
+    for (ImageIcon rawIcon : SYMBOLS) {
+        // 1. Get the raw image from the ImageIcon
+        Image img = rawIcon.getImage();
+        
+        // 2. Create the scaled version
+        Image scaledImg = img.getScaledInstance(CARD_SIZE, CARD_SIZE, Image.SCALE_SMOOTH);
+        
+        // 3. Wrap it back into an ImageIcon
+        ImageIcon finishedIcon = new ImageIcon(scaledImg);
+
+        // 4. Add TWO to the list (one for each card in the pair)
+        symbolsList.add(finishedIcon);
+        symbolsList.add(finishedIcon);
     }
+
+    // Shuffle so the pairs aren't sitting next to each other
+            Collections.shuffle(symbolsList);
+
+            cards = new Card[GRID_SIZE];
+            for (int i = 0; i < GRID_SIZE; i++) {
+        // Make sure your Card constructor accepts (int, ImageIcon)
+               cards [i] = new Card(i, symbolsList.get(i));
+                resetButtonVisual(i, COLOR_FACE_DOWN);
+            }
+        }
+    
 
     // ── Timer ────────────────────────────────────────────────────────────────
 
@@ -387,7 +406,7 @@ public class GamePanel extends BasePanel {
 
     private void shuffleUnmatched() {
         List<Integer> unmatchedIdx = new ArrayList<>();
-        List<String>  unmatchedSym = new ArrayList<>();
+        List<ImageIcon>  unmatchedSym = new ArrayList<>();
 
         for (int i = 0; i < GRID_SIZE; i++) {
             if (!cards[i].isMatched()) {
@@ -415,7 +434,7 @@ public class GamePanel extends BasePanel {
 
         // flip card face-up (encapsulated setter)
         cards[idx].setFaceUp(true);
-        cardButtons[idx].setText(cards[idx].getSymbol());
+        cardButtons[idx].setIcon(cards[idx].getSymbol());
         cardButtons[idx].setBackground(COLOR_FACE_UP);
         flippedIndices.add(idx);
 
@@ -473,6 +492,7 @@ public class GamePanel extends BasePanel {
 
     private void resetButtonVisual(int idx, Color bg) {
         cardButtons[idx].setText("");
+        cardButtons[idx].setIcon(null); 
         cardButtons[idx].setBackground(bg);
         cardButtons[idx].setEnabled(true);
     }
