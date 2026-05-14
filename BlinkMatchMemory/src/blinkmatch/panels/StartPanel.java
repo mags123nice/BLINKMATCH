@@ -1,18 +1,22 @@
 package blinkmatch.panels;
 
 import blinkmatch.*;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.CardLayout;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.KeyStroke;
+import javax.swing.Timer;
 
-
-
-
-/**
- * The opening/title screen.
- *
- * INHERITANCE:  extends BasePanel — reuses makeTitle(), makeButton(), bgColor().
- * POLYMORPHISM: overrides onEnter() / onExit() with its own behaviour.
- */
 public class StartPanel extends BasePanel{
 
 
@@ -26,7 +30,7 @@ public class StartPanel extends BasePanel{
 
     private  void startPanel() {
         initComponents();
-        javax.swing.Timer animationTimer = new javax.swing.Timer(16, e -> repaint());
+        Timer animationTimer = new Timer(16, e -> repaint());
     animationTimer.start();
     }
 
@@ -39,7 +43,6 @@ public class StartPanel extends BasePanel{
         setBackground(bgColor());
 
         setBorder(BorderFactory.createEmptyBorder(450, 60, 0, 60));
-        // panel.setImage(new Image(new File("src/resources/gifs/landscape.gif")));
         bg = new ImageIcon(
                         "src/resources/gifs/landscape.gif"
                 ).getImage();
@@ -67,9 +70,6 @@ public class StartPanel extends BasePanel{
         JButton quitButton =  makeButton(quitIcon,  smolSizeX, smolSizeY);
         JButton helpBtn  = makeButton(helpIcon,  smolSizeX, smolSizeY);
 
-        //startBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        //helpBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         startBtn.addActionListener(e -> {
             SoundPlayer.playClickEffect();
             onExit();
@@ -89,48 +89,24 @@ public class StartPanel extends BasePanel{
         // keyboard: S = start
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('S'), "start");
         getActionMap().put("start", new AbstractAction() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 onExit();
                 SoundPlayer.playClickEffect();
                 cardLayout.show(GameWindow.container, "GAME");
             }
         });
-
-        // --- layout ---
-        //add(Box.createVerticalGlue());
-        //add(title);
-        //add(Box.createVerticalStrut(8));
-        //add(subtitle);
-        //add(Box.createVerticalStrut(40));
-        // add(helpBtn);
-        // add(Box.createVerticalStrut(0));
-        // // add(Box.createVerticalStrut(0));
-        // add(startBtn);
-        // add(Box.createVerticalStrut(0));
-        // // add(Box.createVerticalStrut(0));
-        // add(quitButton);
-        // add(Box.createVerticalGlue());
-
-        // repaint();
-
         add(Box.createHorizontalGlue());
         
-        // 2. Add Help Button
         add(helpBtn);
         
-        // 3. Add a horizontal strut to create a gap between Help and Play
         add(Box.createHorizontalStrut(30)); 
         
-        // 4. Add Play (Start) Button
         add(startBtn);
         
-        // 5. Add a horizontal strut to create a gap between Play and Quit
         add(Box.createHorizontalStrut(30)); 
         
-        // 6. Add Quit Button
         add(quitButton);
         
-        // 7. Add horizontal glue to push everything to the left (towards the center)
         add(Box.createHorizontalGlue());
 
         repaint();
@@ -150,6 +126,6 @@ public class StartPanel extends BasePanel{
 
     }
 
-    @Override public void onEnter() { /* nothing special needed */ }
-    @Override public void onExit()  { /* nothing special needed */ }
+    @Override public void onEnter() {  }
+    @Override public void onExit()  {  }
 }

@@ -4,19 +4,10 @@ import blinkmatch.panels.BasePanel;
 import blinkmatch.panels.GamePanel;
 import blinkmatch.panels.HelpPanel;
 import blinkmatch.panels.StartPanel;
-import java.awt.*;
-import javax.swing.*;
+import java.awt.CardLayout;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-/**
- * Top-level JFrame that owns the CardLayout container.
- *
- * Navigation is centralised here: it calls onExit() on the current panel
- * and onEnter() on the next — decoupling the panels from each other.
- *
- * POLYMORPHISM: panels are stored as BasePanel references; showPanel()
- *               calls the abstract lifecycle methods without knowing the
- *               concrete type.
- */
 public class GameWindow {
 
     private final JFrame     frame;
@@ -25,7 +16,7 @@ public class GameWindow {
     public static int highScore = 0;
 
     private final BasePanel startPanel;
-    private final GamePanel gamePanel;   // kept typed so we can call restartGame()
+    private final GamePanel gamePanel;   
     private final BasePanel helpPanel;
 
     private BasePanel currentPanel;
@@ -37,8 +28,7 @@ public class GameWindow {
 
         container  = new JPanel(cardLayout);
         
-
-        // build panels
+        //Builds Panels
         startPanel = new StartPanel(cardLayout);
         gamePanel  = new GamePanel(cardLayout);
         helpPanel  = new HelpPanel(cardLayout);
@@ -48,14 +38,11 @@ public class GameWindow {
         container.add(helpPanel,  "HELP");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       // frame.setSize(650, 750);
-        // frame.setMinimumSize(new Dimension(750, 750));
         frame.setUndecorated(true);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.add(container);
 
-        // show start screen first
         currentPanel = startPanel;
         cardLayout.show(container, "START");
         currentPanel.onEnter();
@@ -65,11 +52,6 @@ public class GameWindow {
     public void show() { 
         frame.setVisible(true); 
     }
-
-    /**
-     * Transitions to a named screen, honouring the lifecycle contract.
-     * POLYMORPHISM: currentPanel / next are BasePanel — concrete type unknown here.
-     */
 
     public void showPanel(String name) {
         currentPanel.onExit();

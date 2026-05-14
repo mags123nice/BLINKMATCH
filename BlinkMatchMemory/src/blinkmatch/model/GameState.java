@@ -1,7 +1,6 @@
 package blinkmatch.model;
 
-// Tracks the current state of a game session.
-// ENCAPSULATION: internal state is hidden; consumers call high-level methods.
+
 
 public class GameState {
 

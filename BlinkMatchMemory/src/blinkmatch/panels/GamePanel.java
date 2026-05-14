@@ -8,26 +8,52 @@ import blinkmatch.model.Player;
 import blinkmatch.weather.StormyWeather;
 import blinkmatch.weather.SunnyWeather;
 import blinkmatch.weather.Weather;
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.sound.sampled.*;
-import javax.swing.*;
-import javax.swing.border.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
+import java.io.IOException;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
 
-/**
- * Main gameplay screen.
- *
- * All four OOP pillars are active here:
- * ENCAPSULATION  — Card / Player / GameState fields are private.
- * ABSTRACTION    — Weather used only via abstract type; BasePanel lifecycle used.
- * INHERITANCE    — extends BasePanel, inherits makeButton() / bgColor() etc.
- * POLYMORPHISM   — currentWeather variable is Weather; causesShuffle() /
- * getDisplayText() dispatch to the right subclass at runtime.
- */
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentAdapter;
+
+
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.border.EmptyBorder;
+
 public class GamePanel extends BasePanel {
 
     // ── Game data (encapsulated model objects) ───────────────────────────────
@@ -36,21 +62,20 @@ public class GamePanel extends BasePanel {
     private Card[]    cards;
     JButton pauseBtn;
 
-    // ── Weather (polymorphism: type is abstract Weather) ─────────────────────
     private Weather currentWeather;
 
     // ── Swing components ─────────────────────────────────────────────────────
     private JLabel   timerLabel, weatherLabel, scoreLabel;
     private JPanel   gridPanel;
     private JButton[] cardButtons;
-    private javax.swing.Timer delay;
+    private Timer delay;
     
-    // ── Layered Pane Components (For Pause Menu) ─────────────────────────────
+    // ── Pause Menu Components ─────────────────────────────
     private JPanel pauseOverlay;
     private boolean isPaused = false;
 
     // ── Game loop ────────────────────────────────────────────────────────────
-    private javax.swing.Timer countdownTimer;
+    private Timer countdownTimer;
     private final List<Integer> flippedIndices = new ArrayList<>();
     private boolean canFlip = true;
     private boolean stormTriggered = false;
@@ -72,7 +97,7 @@ public class GamePanel extends BasePanel {
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
     private static final int GAME_TIME   = 60;
-    private static final int STORM_TIME  = 30;   // seconds remaining when storm hits
+    private static final int STORM_TIME  = 30;  
 
     // ── CARDS ───────────────────────────────────────────────────────────────
     private static final String PATH_CARD_BACK = "src/resources/images/cardback.png";
@@ -100,7 +125,7 @@ public class GamePanel extends BasePanel {
         
         JLayeredPane layeredPane = new JLayeredPane();
         
-        // 1. Create the Main Game Content (Bottom Layer)
+        // Creates Main Content
         JPanel mainContent = new JPanel(new BorderLayout(8, 8));
         mainContent.setBackground(bgColor());
         mainContent.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
@@ -108,18 +133,16 @@ public class GamePanel extends BasePanel {
         mainContent.add(buildGrid(),   BorderLayout.CENTER);
         mainContent.add(buildButtons(), BorderLayout.SOUTH);
         
-        // 2. Create the Pause Overlay (Top Layer)
+        // Pause Menu
         pauseOverlay = buildPauseMenu();
         
-        // 3. Add both to the LayeredPane
         layeredPane.add(mainContent, JLayeredPane.DEFAULT_LAYER);
         layeredPane.add(pauseOverlay, JLayeredPane.MODAL_LAYER);
         
-        // 4. Because JLayeredPane uses a null layout, we must dynamically resize 
-        // our panels whenever the window size changes.
-        layeredPane.addComponentListener(new java.awt.event.ComponentAdapter() {
+  
+        layeredPane.addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentResized(java.awt.event.ComponentEvent e) {
+            public void componentResized(ComponentEvent e) {
                 int w = layeredPane.getWidth();
                 int h = layeredPane.getHeight();
                 mainContent.setBounds(0, 0, w, h);
@@ -144,16 +167,15 @@ public class GamePanel extends BasePanel {
         add(layeredPane, BorderLayout.CENTER);
         bindKeys();
 
-        // Native Swing fix: Start game ONLY when panel is shown
-        this.addComponentListener(new java.awt.event.ComponentAdapter() {
+        this.addComponentListener(new ComponentAdapter() {
             @Override
-            public void componentShown(java.awt.event.ComponentEvent e) {
+            public void componentShown(ComponentEvent e) {
                 if (!isPaused && !gameState.isRunning()) {
                     startGame();
                 }
             }
             @Override
-            public void componentHidden(java.awt.event.ComponentEvent e) {
+            public void componentHidden(ComponentEvent e) {
                 stopTimer();
             }
         });
@@ -175,8 +197,8 @@ public class GamePanel extends BasePanel {
         Font f = new Font("SansSerif", Font.BOLD, 14);
 
         timerLabel   = new JLabel("Timer: " + GAME_TIME, SwingConstants.CENTER);
-        weatherLabel = new JLabel("\u2600 Sunny",          SwingConstants.CENTER);
-        scoreLabel   = new JLabel("Score: 0",              SwingConstants.CENTER);
+        weatherLabel = new JLabel("\u2600 Sunny",SwingConstants.CENTER);
+        scoreLabel   = new JLabel("Score: 0",SwingConstants.CENTER);
 
         for (JLabel l : new JLabel[]{timerLabel, weatherLabel, scoreLabel}) {
             l.setFont(f);
@@ -211,17 +233,11 @@ public class GamePanel extends BasePanel {
     }
 
     private JPanel buildButtons() {
-        // Reduced the horizontal gap from 30 to 10 fix pushed off screen
         JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         south.setBackground(bgColor());
 
-        // imageIcons 
-
-        
-
-        // Scaled these down to atleast 130x50 so all fit
-        
-        pauseBtn = makeButton(pausePicture, 150, 100);
+        ImageIcon pauseIcon = new ImageIcon("src/resources/images/pauseIcon.png");        
+        JButton pauseBtn = makeButton(pauseIcon, 50, 50);
 
         pauseBtn.addActionListener(e -> {
             ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon2.png");
@@ -234,19 +250,11 @@ public class GamePanel extends BasePanel {
             pauseOverlay.repaint();
         });
 
-        
-
-        // Add them in this exact order to force PAUSE into the middle
         south.add(pauseBtn);
-        
         return south;
     }
     
     private JPanel buildPauseMenu() {
-
-
-
-        // GridBagLayout automatically centers contents inside the panel
         JPanel overlay = new JPanel(){
             @Override
             protected void paintComponent(Graphics g)
@@ -269,23 +277,18 @@ public class GamePanel extends BasePanel {
         overlay.setBorder(new EmptyBorder(110, 12, 12, 10));
         overlay.repaint();
         overlay.setBackground(Color.blue);
-        overlay.setBackground(new Color(0, 0, 0)); // Semi-transparent black
-        overlay.setVisible(false); // Hidden by default
-
-        // JPanel menuBox = new JPanel();
-
+        overlay.setBackground(new Color(0, 0, 0)); 
+        overlay.setVisible(false); 
         overlay.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        // gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE;  // Do NOT stretch the buttons
-        gbc.anchor = GridBagConstraints.CENTER; // Keep the whole group centered
-        gbc.insets = new Insets(15, 50, 15, 50);
+        gbc.fill = GridBagConstraints.NONE;  
+        gbc.anchor = GridBagConstraints.CENTER; 
+        gbc.insets = new Insets(10, 50, 10, 50);
 
         overlay.setOpaque(false);
 
-
-
+        //Icons in Pause
         ImageIcon resumeIcon = new ImageIcon("src/resources/images/resumeIcon.png");
         ImageIcon restartIcon = new ImageIcon("src/resources/images/restartIcon.png");
         ImageIcon exitIcon = new ImageIcon("src/resources/images/quitIcon.png");
@@ -297,11 +300,6 @@ public class GamePanel extends BasePanel {
         JButton restartBtn = makeButton(restartIcon, buttonX, buttonY);
         JButton quitBtn    = makeButton(exitIcon, buttonX, buttonY);
         
-        
-
-        // JButton resumeBtn = makeButton(resumeIcon, buttonX,buttonY);
-        // JButton restartBtn = makeButton(restartIcon, buttonX,buttonY);
-        // JButton quitBtn    = makeButton(exitIcon, buttonX,buttonY);
         
         for (JButton btn : new JButton[]{resumeBtn, restartBtn, quitBtn}) {
             btn.setFont(new Font("SansSerif", Font.BOLD, 18));
@@ -324,26 +322,9 @@ public class GamePanel extends BasePanel {
             cardLayout.show(GameWindow.container, "START");
         });
 
-        //menuBox.add(pauseTitle);
-
-         
-        // menuBox.add(Box.createRigidArea(new Dimension(10, )));
-
         overlay.add(resumeBtn, gbc);
-
-        
-        
-        overlay.add(restartBtn, gbc);
-  
-        
+        overlay.add(restartBtn, gbc);        
         overlay.add(quitBtn, gbc);
-        
-
-        // // menuBox.add(Box.createRigidArea(new Dimension(10, 400)));
-        
-        
-  
-
 
         return overlay;
     }
@@ -352,7 +333,7 @@ public class GamePanel extends BasePanel {
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('R'), "restart");
         getActionMap().put("restart", new AbstractAction() {
             @Override
-            public void actionPerformed( java.awt.event.ActionEvent e) 
+            public void actionPerformed( ActionEvent e) 
             { 
                 restartGame();
                 SoundPlayer.playClickEffect();
@@ -363,7 +344,7 @@ public class GamePanel extends BasePanel {
         getActionMap().put("exit", new AbstractAction() {
 
             @Override
-            public void actionPerformed( java.awt.event.ActionEvent e) 
+            public void actionPerformed( ActionEvent e) 
             { 
                 onExit();
                 SoundPlayer.playClickEffect();
@@ -372,12 +353,12 @@ public class GamePanel extends BasePanel {
             
         });
         
-        // Pressing Escape or 'P' pauses/unpauses
+        // Key Inputs to Pause
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "togglePause");
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('P'), "togglePause");
         getActionMap().put("togglePause", new AbstractAction() {
             @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 SoundPlayer.playClickEffect();
                 if (isPaused) resumeGame();
                 else pauseGame();
@@ -390,7 +371,7 @@ public class GamePanel extends BasePanel {
     public void startGame() {
         player.reset();
         gameState.reset(GAME_TIME);
-        currentWeather  = new SunnyWeather();   // polymorphism: Weather reference
+        currentWeather  = new SunnyWeather();   
         stormTriggered  = false;
         flippedIndices.clear();
         canFlip = true;
@@ -409,9 +390,9 @@ public class GamePanel extends BasePanel {
     private void pauseGame() {
         if (!gameState.isRunning() || isPaused) return; // Don't pause if game is over
         stopTimer();
-        canFlip = false; // Prevent card clicks
+        canFlip = false; 
         isPaused = true;
-        pauseOverlay.setVisible(true); // Show the semi-transparent overlay
+        pauseOverlay.setVisible(true); 
         
     }
     
@@ -420,7 +401,7 @@ public class GamePanel extends BasePanel {
         pauseOverlay.setVisible(false);
         canFlip = true;
         isPaused = false;
-
+        
         ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon2.png");
         
         pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(150,100, Image.SCALE_SMOOTH));
@@ -428,7 +409,6 @@ public class GamePanel extends BasePanel {
         pauseBtn.repaint();
         
 
-        
         // Re-start the timer where it left off
         countdownTimer = new javax.swing.Timer(1000, e -> tick());
         countdownTimer.start();
@@ -436,14 +416,13 @@ public class GamePanel extends BasePanel {
     }
 
     private void buildCards() {
-    // Dynamically calculate size based on the gridPanel's current size
-        int cardW = gridPanel.getWidth() / 4 - 10; // 4 columns, minus gap
-        int cardH = gridPanel.getHeight() / 4 - 10; // 4 rows, minus gap
+    // Dynamically addjust size based on the gridPanel's current size
+        int cardW = gridPanel.getWidth() / 4 - 10; 
+        int cardH = gridPanel.getHeight() / 4 - 10; 
 
         List<ImageIcon> symbolsList = new ArrayList<>();
         for (ImageIcon rawIcon : SYMBOLS) {
             Image img = rawIcon.getImage();
-            // This stretches the fruit to perfectly fill the button
             Image scaledImg = img.getScaledInstance(cardW, cardH, Image.SCALE_SMOOTH);
             ImageIcon finishedIcon = new ImageIcon(scaledImg);
 
@@ -455,7 +434,6 @@ public class GamePanel extends BasePanel {
         cards = new Card[GRID_SIZE];
         for (int i = 0; i < GRID_SIZE; i++) {
             cards[i] = new Card(i, symbolsList.get(i));
-        // Pass the path to the card back
             resetButtonVisual(i, getStretchedIcon(PATH_CARD_BACK), SUNNY_ORANGE);
         }
     }
@@ -466,7 +444,7 @@ public class GamePanel extends BasePanel {
     private void startTimer() {
         stopTimer();
         gameState.setRunning(true);
-        countdownTimer = new javax.swing.Timer(1000, e -> tick());
+        countdownTimer = new Timer(1000, e -> tick());
         countdownTimer.start();
     }
 
@@ -484,7 +462,7 @@ public class GamePanel extends BasePanel {
         // trigger storm once at STORM_TIME
         if (!stormTriggered && gameState.getTimeRemaining() == STORM_TIME) {
             stormTriggered = true;
-            applyWeather(new StormyWeather());   // polymorphism
+            applyWeather(new StormyWeather());   
         }
         // revert to sunny 5 s later
         if (stormTriggered && gameState.getTimeRemaining() == STORM_TIME - 5
@@ -498,17 +476,17 @@ public class GamePanel extends BasePanel {
         }
     }
 
-    // ── Weather (polymorphism) ───────────────────────────────────────────────
+    // ── Weather ───────────────────────────────────────────────
 
     private void applyWeather(Weather weather) {
         currentWeather = weather;
         weatherLabel.setText(currentWeather.getDisplayText());
 
-    if (currentWeather instanceof StormyWeather) { //Change color depending on weather
-        gridPanel.setBackground(STORMY_BLUE); // Dark Stormy Blue
-        this.setBackground(STORMY_BLUE);      // Main Panel Blue
+    if (currentWeather instanceof StormyWeather) { //Causes Background to Change Color depending on Weather
+        gridPanel.setBackground(STORMY_BLUE); 
+        this.setBackground(STORMY_BLUE);      
     } else {
-        gridPanel.setBackground(bgColor());             // Back to Sunny Color
+        gridPanel.setBackground(bgColor());             
         this.setBackground(bgColor());
     }
 
@@ -521,15 +499,15 @@ public class GamePanel extends BasePanel {
         List<Integer> unmatchedIdx = new ArrayList<>();
         List<ImageIcon>  unmatchedSym = new ArrayList<>();
 
-        for (int i = 0; i < GRID_SIZE; i++) {
+        for (int i = 0; i < GRID_SIZE; i++) { //Sorts through the grid to create a list of all unmatched Symbols
             if (!cards[i].isMatched()) {
                 unmatchedIdx.add(i);
                 unmatchedSym.add(cards[i].getSymbol());
             }
         }
-        Collections.shuffle(unmatchedSym);
+        Collections.shuffle(unmatchedSym); //Scrambles them
 
-    for (int i = 0; i < unmatchedIdx.size(); i++) {
+    for (int i = 0; i < unmatchedIdx.size(); i++) {//Add the remaining symbols back to the list
         int idx = unmatchedIdx.get(i);
         cards[idx] = new Card(idx, unmatchedSym.get(i));
         
@@ -546,7 +524,7 @@ public class GamePanel extends BasePanel {
         if (cards[idx].isMatched())           return;
         if (flippedIndices.contains(idx))     return;
 
-        // flip card face-up (encapsulated setter)
+        // flip card face-up 
         cards[idx].setFaceUp(true);
         cardButtons[idx].setIcon(cards[idx].getSymbol());
         cardButtons[idx].setBackground(COLOR_FACE_UP);
@@ -559,7 +537,7 @@ public class GamePanel extends BasePanel {
         }
     }
 
-    private void checkMatch() {
+    private void checkMatch() { //Checks if the next two cards flipped are the same
         int i1 = flippedIndices.get(0);
         int i2 = flippedIndices.get(1);
 
@@ -585,8 +563,7 @@ public class GamePanel extends BasePanel {
             }
         } else {
             // flip back after short delay
-            // Inside the flipTimer delay logic
-        delay = new javax.swing.Timer(700, e -> {
+        delay = new Timer(700, e -> {
             cards[i1].setFaceUp(false);
             cards[i2].setFaceUp(false);
     
@@ -605,13 +582,13 @@ public class GamePanel extends BasePanel {
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) {
+private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps reset Button Visual after certain triggers
     cardButtons[idx].setText("");
     cardButtons[idx].setIcon(icon);
     cardButtons[idx].setBackground(bgColor); 
     cardButtons[idx].setEnabled(true);
 }
-    private void refreshHUD() {
+    private void refreshHUD() { 
         timerLabel.setText("Timer: "   + gameState.getTimeRemaining());
         scoreLabel.setText("Score: "   + player.getScore());
         weatherLabel.setText(currentWeather.getDisplayText());
@@ -653,9 +630,8 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) {
         else { onExit(); cardLayout.show(GameWindow.container, "START"); }
     }
 
-    private ImageIcon getStretchedIcon(String path) {
+    private ImageIcon getStretchedIcon(String path) { //Adjusts the image size to grid based on path
         ImageIcon raw = new ImageIcon(path);
-        // Use the first button as a size reference
             int w = cardButtons[0].getWidth();
             int h = cardButtons[0].getHeight();
 

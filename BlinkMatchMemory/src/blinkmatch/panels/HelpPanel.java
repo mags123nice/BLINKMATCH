@@ -1,17 +1,19 @@
 package blinkmatch.panels;
 
-import java.awt.*;
-import javax.swing.*;
-
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Image;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 import blinkmatch.*;
 
-/**
- * Help / instructions screen.
- *
- * INHERITANCE:  extends BasePanel — reuses shared helpers.
- * POLYMORPHISM: overrides lifecycle methods.
- */
 public class HelpPanel extends BasePanel implements Runnable {
     
     private Image helpImg;
@@ -22,9 +24,8 @@ public class HelpPanel extends BasePanel implements Runnable {
         startPanel();
     }
 
-    private  void startPanel()
-    {
-        // Method call so that panel is instantiated once setUp is happening
+    private  void startPanel() {
+   
         initComponents();
 
     }
@@ -47,7 +48,6 @@ public class HelpPanel extends BasePanel implements Runnable {
         //imageIcons
         ImageIcon backIcon = new ImageIcon("src/resources/images/backIcon.png");
 
-        //back btn
         //MAKE ICONIMAGE
         JButton backBtn = makeButton(backIcon, 150, 75);
         backBtn.setBackground(new Color(0,0,0,0));
@@ -86,6 +86,6 @@ public class HelpPanel extends BasePanel implements Runnable {
     }
 
     
-    @Override public void onEnter() { /* nothing special needed */ }
-    @Override public void onExit()  { /* nothing special needed */ }
+    @Override public void onEnter() {}
+    @Override public void onExit()  {}
 }
