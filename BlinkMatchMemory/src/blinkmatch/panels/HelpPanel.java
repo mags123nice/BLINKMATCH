@@ -102,6 +102,7 @@ public class HelpPanel extends BasePanel implements Runnable {
         );
     }
 
+    }
     @Override public void onEnter() { /* nothing special needed */ }
     @Override public void onExit()  { /* nothing special needed */ }
 }

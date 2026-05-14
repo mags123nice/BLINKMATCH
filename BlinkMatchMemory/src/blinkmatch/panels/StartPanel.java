@@ -17,7 +17,7 @@ public class StartPanel extends BasePanel{
 
 
     private Image bg = null;
-    private JLabel highScoreLabel;
+    
 
     public StartPanel(CardLayout cardLayout) {
         super (cardLayout);
@@ -30,20 +30,40 @@ public class StartPanel extends BasePanel{
     animationTimer.start();
     }
 
+   
+
     @Override
-    public void initComponents() {
-        setLayout(new BorderLayout());
+    public  void initComponents() {
+        
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBackground(bgColor());
 
-        // Button icons
+        setBorder(BorderFactory.createEmptyBorder(250, 60, 0, 60));
+        // panel.setImage(new Image(new File("src/resources/gifs/landscape.gif")));
+        bg = new ImageIcon(
+                        "src/resources/gifs/landscape.gif"
+                ).getImage();
+
+        //button imageicon
         ImageIcon startIcon = new ImageIcon("src/resources/images/startIcon.png");
         ImageIcon helpIcon = new ImageIcon("src/resources/images/helpIcon.png");
         ImageIcon quitIcon = new ImageIcon("src/resources/images/exitIcon.png");
+        
 
-        // Build buttons
-        JButton startBtn = makeButton(startIcon, 170, 150);
-        JButton quitButton = makeButton(quitIcon, 125, 95);
-        JButton helpBtn = makeButton(helpIcon, 125, 95);
+        // --- title ---
+        JLabel title = makeTitle("Blink Match Memory");
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel subtitle = makeSubtitle("Match all pairs before the storm hits!");
+        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // --- buttons ---
+        JButton startBtn =  makeButton(startIcon, 170, 150);
+        JButton quitButton =  makeButton(quitIcon,  125, 95);
+        JButton helpBtn  = makeButton(helpIcon,  125, 95);
+
+        //startBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //helpBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         startBtn.addActionListener(e -> {
             onExit();
@@ -58,7 +78,7 @@ public class StartPanel extends BasePanel{
             System.exit(0);
         });
 
-        // Keyboard: S = start
+        // keyboard: S = start
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('S'), "start");
         getActionMap().put("start", new AbstractAction() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -67,46 +87,44 @@ public class StartPanel extends BasePanel{
             }
         });
 
-        // ─── BULLETPROOF VERTICAL LAYOUT ──────────────────────────
-        
-        // 1. Create an overlay that strictly stacks items Top-to-Bottom (Y_AXIS)
-        JPanel overlayBox = new JPanel();
-        overlayBox.setLayout(new BoxLayout(overlayBox, BoxLayout.Y_AXIS));
-        overlayBox.setOpaque(false); // Keeps GIF visible
+        // --- layout ---
+        //add(Box.createVerticalGlue());
+        //add(title);
+        //add(Box.createVerticalStrut(8));
+        //add(subtitle);
+        //add(Box.createVerticalStrut(40));
+        // add(helpBtn);
+        // add(Box.createVerticalStrut(0));
+        // // add(Box.createVerticalStrut(0));
+        // add(startBtn);
+        // add(Box.createVerticalStrut(0));
+        // // add(Box.createVerticalStrut(0));
+        // add(quitButton);
+        // add(Box.createVerticalGlue());
 
-        // 2. Build the High Score Label
-        highScoreLabel = new JLabel("HIGH SCORE: " + GameWindow.highScore);
-        highScoreLabel.setFont(new Font("SansSerif", Font.BOLD, 28));
-        highScoreLabel.setForeground(Color.WHITE);
-        // Force the text to center horizontally
-        highScoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        // repaint();
 
-        // 3. Build the Button Row (stacks buttons Left-to-Right)
-        JPanel buttonRow = new JPanel();
-        buttonRow.setLayout(new BoxLayout(buttonRow, BoxLayout.X_AXIS));
-        buttonRow.setOpaque(false);
+        add(Box.createHorizontalGlue());
         
-        buttonRow.add(Box.createHorizontalGlue());
-        buttonRow.add(helpBtn);
-        buttonRow.add(Box.createHorizontalStrut(15));
-        buttonRow.add(startBtn);
-        buttonRow.add(Box.createHorizontalStrut(15));
-        buttonRow.add(quitButton);
-        buttonRow.add(Box.createHorizontalGlue());
+        // 2. Add Help Button
+        add(helpBtn);
+        
+        // 3. Add a horizontal strut to create a gap between Help and Play
+        add(Box.createHorizontalStrut(30)); 
+        
+        // 4. Add Play (Start) Button
+        add(startBtn);
+        
+        // 5. Add a horizontal strut to create a gap between Play and Quit
+        add(Box.createHorizontalStrut(30)); 
+        
+        // 6. Add Quit Button
+        add(quitButton);
+        
+        // 7. Add horizontal glue to push everything to the left (towards the center)
+        add(Box.createHorizontalGlue());
 
-        // 4. Stack them together using our invisible "Spring"
-        overlayBox.add(Box.createVerticalStrut(30)); // 30px gap from the top of window
-        overlayBox.add(highScoreLabel);              // Snap High Score to top
-        
-        // --- THE MAGIC SPRING ---
-        // This expands to fill ALL empty space, pushing the buttons down
-        overlayBox.add(Box.createVerticalGlue());    
-        
-        overlayBox.add(buttonRow);                   // Snap buttons to bottom
-        overlayBox.add(Box.createVerticalStrut(40)); // 40px gap from the bottom of window
-
-        // Add the finished layout to the panel
-        add(overlayBox, BorderLayout.CENTER);
+        repaint();
     }
 
     @Override
