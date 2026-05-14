@@ -50,6 +50,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -83,6 +84,8 @@ public class GamePanel extends BasePanel {
     private final List<Integer> flippedIndices = new ArrayList<>();
     private boolean canFlip = true;
     private boolean stormTriggered = false;
+        private JLabel gameOverTitle;
+    private JTextArea gameOverStats;
 
     private ImageIcon pausePicture = new ImageIcon("src/resources/images/pauseIcon3.png");
 
@@ -609,8 +612,7 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
         weatherLabel.setText(currentWeather.getDisplayText());
     }
 
-    private JLabel gameOverTitle;
-    private JTextArea gameOverStats;
+
 
     private JPanel buildGameOver() {
 
