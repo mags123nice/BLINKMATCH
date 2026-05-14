@@ -22,6 +22,7 @@ public class GameWindow {
     private final JFrame     frame;
     private final CardLayout cardLayout = new CardLayout();
     public static JPanel  container;
+    public static int highScore = 0;
 
     private final BasePanel startPanel;
     private final GamePanel gamePanel;   // kept typed so we can call restartGame()

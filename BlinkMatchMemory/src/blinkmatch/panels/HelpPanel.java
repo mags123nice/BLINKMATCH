@@ -4,18 +4,21 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
+import blinkmatch.GameWindow;
+
 /**
  * Help / instructions screen.
  *
  * INHERITANCE:  extends BasePanel — reuses shared helpers.
  * POLYMORPHISM: overrides lifecycle methods.
  */
-public class HelpPanel extends BasePanel {
-
+public class HelpPanel extends BasePanel implements Runnable {
+    
+    private Image helpImg;
 
     public HelpPanel(CardLayout cardLayout) {
         super(cardLayout);
-        
+        startPanel();
     }
 
     public void startPanel()
@@ -31,49 +34,40 @@ public class HelpPanel extends BasePanel {
         setBackground(bgColor());
         setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        // --- title ---
-        JLabel title = makeTitle("How to Play");
-        title.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        add(title, BorderLayout.NORTH);
+        helpImg = new ImageIcon("src/resources/gifs/helpPage.gif").getImage();
 
-        // --- content ---
+        Thread start = new Thread(this);
+        start.start();
+
+        //content
         JPanel content = new JPanel(new GridLayout(1, 2, 16, 0));
         content.setBackground(bgColor());
 
         //imageIcons
         ImageIcon backIcon = new ImageIcon("src/resources/images/backIcon.png");
 
-        content.add(makeSection("Mouse / Keyboard",
-                new String[]{
-                    "Left Click — flip a card",
-                    "S — start game",
-                    "R — restart",
-                    "E — exit to start"
-                }));
-
-        content.add(makeSection("Weather System",
-                new String[]{
-                    "\u2600 Sunny — normal gameplay",
-                    "\u26c8 Stormy — cards shuffle!",
-                    "Adapt fast to the storm.",
-                    "Match all pairs to win."
-                }));
-
-        add(content, BorderLayout.CENTER);
-
-        // --- back button ---
+        //back btn
         //MAKE ICONIMAGE
-        JButton backBtn = makeButton(backIcon, 700, 500);
+        JButton backBtn = makeButton(backIcon, 150, 75);
+        backBtn.setBackground(new Color(0,0,0,0));
+
         backBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         backBtn.addActionListener(e -> {
             onExit();
-            cardLayout.show(this, "START");
+            cardLayout.show(GameWindow.container, "START");
         });
 
         JPanel south = new JPanel();
-        south.setBackground(bgColor());
+        south.setBackground(new Color(0,0,0,0));
         south.add(backBtn);
         add(south, BorderLayout.SOUTH);
+    }
+
+    @Override
+    public void run() {
+        while(true) {
+            repaint();
+        }
     }
 
     private JPanel makeSection(String title, String[] lines) {
@@ -92,6 +86,20 @@ public class HelpPanel extends BasePanel {
             p.add(lbl);
         }
         return p;
+    }
+
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        g.drawImage(
+            helpImg,
+            0,
+            0,
+            getWidth(),
+            getHeight(),
+            null
+        );
+
     }
 
     @Override public void onEnter() { /* nothing special needed */ }

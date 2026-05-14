@@ -16,7 +16,7 @@ public class Player {
         this.moves = 0;
     }
 
-    // ---------- getters ----------
+    //getters
     public String getName()  { 
         return name; 
     }
@@ -27,7 +27,7 @@ public class Player {
         return moves; 
     }
 
-    // ---------- controlled mutators ----------
+    //getters
     public void addScore(int points)  { 
         this.score += points; 
     }
