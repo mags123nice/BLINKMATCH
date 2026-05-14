@@ -222,7 +222,12 @@ public class GamePanel extends BasePanel {
         
         JButton pauseBtn = makeButton(pauseIcon, 50, 50);
 
-        pauseBtn.addActionListener(e -> pauseGame());
+        pauseBtn.addActionListener(e -> {
+
+
+                pauseGame();
+                pauseOverlay.repaint();
+        });
 
         
 
@@ -234,7 +239,22 @@ public class GamePanel extends BasePanel {
     
     private JPanel buildPauseMenu() {
         // GridBagLayout automatically centers contents inside the panel
-        JPanel overlay = new JPanel(new GridBagLayout()); 
+        JPanel overlay = new JPanel(new GridBagLayout()){
+            @Override
+            protected void paintComponent(Graphics g)
+            {
+                super.paintComponent(g);
+                g.drawImage(
+                    new ImageIcon("src/resources/PauseImage.png").getImage(),
+                    0,
+                    0,
+                    750,
+                    600,
+                    null);
+            }
+        }; 
+        overlay.repaint();
+  
         overlay.setBackground(Color.blue);
         overlay.setBackground(new Color(0, 0, 0)); // Semi-transparent black
         overlay.setVisible(false); // Hidden by default
@@ -369,6 +389,7 @@ public class GamePanel extends BasePanel {
     private void buildCards() {
     int CARD_SIZE = 150; // Adjust this number to fit your grid buttons
     List<ImageIcon> symbolsList = new ArrayList<>();
+    
 
     for (ImageIcon rawIcon : SYMBOLS) {
         // 1. Get the raw image from the ImageIcon
