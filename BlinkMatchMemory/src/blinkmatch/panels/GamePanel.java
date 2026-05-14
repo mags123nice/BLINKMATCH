@@ -70,7 +70,7 @@ public class GamePanel extends BasePanel {
     private static final int STORM_TIME  = 30;   // seconds remaining when storm hits
 
     // ── CARDS ───────────────────────────────────────────────────────────────
-    int BACK_SIZE=225;
+    int BACK_SIZE=275;
     private static final ImageIcon Card_Back  = new ImageIcon("src/resources/images/cardback.png");
     Image scaledCard = Card_Back.getImage().getScaledInstance(BACK_SIZE, BACK_SIZE, Image.SCALE_SMOOTH);
     ImageIcon ICON_FACE_DOWN = new ImageIcon(scaledCard);
@@ -78,7 +78,7 @@ public class GamePanel extends BasePanel {
     private static final Color COLOR_FACE_UP    = Color.WHITE;
     private static final Color COLOR_MATCHED    = new Color(144, 238, 144);
 
-    private static final ImageIcon Storm_Back = new ImageIcon("src/resources/images/Avocado.png");
+    private static final ImageIcon Storm_Back = new ImageIcon("src/resources/images/stormIcon.png");
     Image scaledStorm = Storm_Back.getImage().getScaledInstance(BACK_SIZE, BACK_SIZE, Image.SCALE_SMOOTH);
     ImageIcon ICON_STORM_DOWN = new ImageIcon(scaledStorm);
 
@@ -367,7 +367,7 @@ public class GamePanel extends BasePanel {
     }
 
     private void buildCards() {
-    int CARD_SIZE = 150; // Adjust this number to fit your grid buttons
+    int CARD_SIZE = 175; // Adjust this number to fit your grid buttons
     List<ImageIcon> symbolsList = new ArrayList<>();
 
     for (ImageIcon rawIcon : SYMBOLS) {

@@ -2,7 +2,7 @@ package blinkmatch.panels;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
+
 
 import blinkmatch.*;
 
@@ -70,24 +70,6 @@ public class HelpPanel extends BasePanel implements Runnable {
         while(true) {
             repaint();
         }
-    }
-
-    private JPanel makeSection(String title, String[] lines) {
-        JPanel p = new JPanel();
-        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-        p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(new Color(100, 149, 237), 1),
-                title, TitledBorder.LEFT, TitledBorder.TOP,
-                new Font("SansSerif", Font.BOLD, 13), new Color(60, 60, 120)));
-
-        for (String line : lines) {
-            JLabel lbl = new JLabel(line);
-            lbl.setFont(new Font("SansSerif", Font.PLAIN, 13));
-            lbl.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
-            p.add(lbl);
-        }
-        return p;
     }
 
     @Override
