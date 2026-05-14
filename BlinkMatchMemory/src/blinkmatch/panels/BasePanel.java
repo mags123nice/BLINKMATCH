@@ -58,27 +58,28 @@ public abstract class BasePanel extends JPanel {
     }
 
     protected JButton makeButton(ImageIcon icon, int xSize, int ySize) {
-    JButton btn = new JButton(icon);
-    
-    // Set both sizes to guide the Layout Manager
-    Dimension size = new Dimension(xSize, ySize);
-    btn.setPreferredSize(size);
-    btn.setMinimumSize(size); 
-    
-    if (xSize > 0 && ySize > 0) {
-        Image scaledImage = icon.getImage().getScaledInstance(
-            xSize, ySize, Image.SCALE_SMOOTH
-        );
-        btn.setIcon(new ImageIcon(scaledImage));
+        JButton btn = new JButton(icon);
+        
+        // Set both sizes to guide the Layout Manager
+        Dimension size = new Dimension(xSize, ySize);
+        btn.setPreferredSize(size);
+        btn.setMaximumSize(size); 
+        btn.setMinimumSize(size); 
+        
+        if (xSize > 0 && ySize > 0) {
+            Image scaledImage = icon.getImage().getScaledInstance(
+                xSize, ySize, Image.SCALE_SMOOTH
+            );
+            btn.setIcon(new ImageIcon(scaledImage));
+        }
+
+        btn.setBorder(null);
+        btn.setContentAreaFilled(false); // Important: hides the grey background
+
+        btn.setCursor(customHoverCursor);
+        
+        return btn;
     }
-
-    btn.setBorder(null);
-    btn.setContentAreaFilled(false); // Important: hides the grey background
-
-    btn.setCursor(customHoverCursor);
-    
-    return btn;
-}
 
     protected JLabel makeTitle(String text) {
         JLabel lbl = new JLabel(text, SwingConstants.CENTER);

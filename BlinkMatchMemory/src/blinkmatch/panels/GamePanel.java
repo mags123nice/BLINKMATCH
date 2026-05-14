@@ -237,7 +237,7 @@ public class GamePanel extends BasePanel {
     
     private JPanel buildPauseMenu() {
         // GridBagLayout automatically centers contents inside the panel
-        JPanel overlay = new JPanel(new GridBagLayout()){
+        JPanel overlay = new JPanel(){
             @Override
             protected void paintComponent(Graphics g)
             {
@@ -251,38 +251,52 @@ public class GamePanel extends BasePanel {
                     null);
             }
         }; 
+
+
+
         overlay.repaint();
-  
         overlay.setBackground(Color.blue);
         overlay.setBackground(new Color(0, 0, 0)); // Semi-transparent black
         overlay.setVisible(false); // Hidden by default
 
-        JPanel menuBox = new JPanel();
-        menuBox.setLayout(new BoxLayout(menuBox, BoxLayout.Y_AXIS));
-        menuBox.setOpaque(false);
+        // JPanel menuBox = new JPanel();
 
-        JLabel pauseTitle = new JLabel("GAME PAUSED");
-        pauseTitle.setFont(new Font("SansSerif", Font.BOLD, 40));
-        pauseTitle.setForeground(Color.WHITE);
-        pauseTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        overlay.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        // gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.NONE;  // Do NOT stretch the buttons
+        gbc.anchor = GridBagConstraints.CENTER; // Keep the whole group centered
+        gbc.insets = new Insets(30, 50, 30, 50);
+
+        overlay.setOpaque(false);
+
+
 
         ImageIcon resumeIcon = new ImageIcon("src/resources/images/resumeIcon.png");
         ImageIcon restartIcon = new ImageIcon("src/resources/images/restartIcon.png");
         ImageIcon exitIcon = new ImageIcon("src/resources/images/quitIcon.png");
         
-        int buttonX = 150;
-        int buttonY = 175;
+        int buttonX = 170;
+        int buttonY = 160;
         
-        JButton resumeBtn = makeButton(resumeIcon, buttonX,buttonY);
-        JButton restartBtn = makeButton(restartIcon, buttonX,buttonY);
-        JButton quitBtn    = makeButton(exitIcon, buttonX,buttonY);
+        JButton resumeBtn = makeButton(resumeIcon, buttonX, buttonY);
+        JButton restartBtn = makeButton(restartIcon, buttonX, buttonY);
+        JButton quitBtn    = makeButton(exitIcon, buttonX, buttonY);
+        
+        
 
+        // JButton resumeBtn = makeButton(resumeIcon, buttonX,buttonY);
+        // JButton restartBtn = makeButton(restartIcon, buttonX,buttonY);
+        // JButton quitBtn    = makeButton(exitIcon, buttonX,buttonY);
+        
         for (JButton btn : new JButton[]{resumeBtn, restartBtn, quitBtn}) {
             btn.setFont(new Font("SansSerif", Font.BOLD, 18));
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
             btn.setFocusPainted(false);
             btn.setMaximumSize(new Dimension(buttonX, buttonY));
         }
+
 
         resumeBtn.addActionListener(e -> resumeGame());
         
@@ -299,15 +313,23 @@ public class GamePanel extends BasePanel {
 
         //menuBox.add(pauseTitle);
 
-        menuBox.add(Box.createVerticalGlue());
-        menuBox.add(resumeBtn);
-        menuBox.add(Box.createRigidArea(new Dimension(10, 10)));
-        menuBox.add(restartBtn);
-        menuBox.add(Box.createRigidArea(new Dimension(10, 10)));
-        menuBox.add(quitBtn);
-        menuBox.add(Box.createVerticalGlue());
+         
+        // menuBox.add(Box.createRigidArea(new Dimension(10, )));
+
+        overlay.add(resumeBtn, gbc);
+
         
-        overlay.add(menuBox);
+        
+        overlay.add(restartBtn, gbc);
+  
+        
+        overlay.add(quitBtn, gbc);
+        
+
+        // // menuBox.add(Box.createRigidArea(new Dimension(10, 400)));
+        
+        
+  
 
 
         return overlay;
