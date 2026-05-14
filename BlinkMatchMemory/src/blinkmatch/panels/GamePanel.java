@@ -45,7 +45,6 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -331,7 +330,7 @@ public class GamePanel extends BasePanel {
         });
         
         quitBtn.addActionListener(e -> {
-            resumeGame();
+            
             onExit();
             cardLayout.show(GameWindow.container, "START");
         });
@@ -679,13 +678,7 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
         return overlay;
     }
 
-    private void isHighScore(){
-        boolean isNewHighScore = false;
-            if (player.getScore() > GameWindow.highScore) {
-                GameWindow.highScore = player.getScore();
-                isNewHighScore = true;
-            }
-    }
+   
 
     private void showGameOver(boolean won) {
 
@@ -712,7 +705,7 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
 
         boolean isNewHighScore = player.getScore() > GameWindow.highScore;
         if (isNewHighScore) {
-            // 2. IMPORTANT: Save to the file so it persists after closing the app!
+            
             GameWindow.saveHighScore(player.getScore()); 
         };
 
