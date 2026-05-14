@@ -22,7 +22,7 @@ public class HelpPanel extends BasePanel implements Runnable {
         startPanel();
     }
 
-    public void startPanel()
+    private  void startPanel()
     {
         // Method call so that panel is instantiated once setUp is happening
         initComponents();
@@ -100,6 +100,7 @@ public class HelpPanel extends BasePanel implements Runnable {
             getHeight(),
             null
         );
+    }
 
     }
     @Override public void onEnter() { /* nothing special needed */ }

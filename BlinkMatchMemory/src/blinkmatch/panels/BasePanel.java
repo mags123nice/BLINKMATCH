@@ -22,13 +22,13 @@ public abstract class BasePanel extends JPanel {
         this.cardLayout = cardLayout;
 
     
-        Image cursorImage = new ImageIcon("src/resources/images/cursorIcon.png").getImage();
+        Image cursorImage = new ImageIcon("src/resources/images/cursorIcon.png").getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
         Point hotspot = new java.awt.Point(0, 0); 
         Cursor customCursor = java.awt.Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, hotspot, "Custom Cursor");
         this.setCursor(customCursor);
 
         // --- 2. Build the Hover Cursor ONCE here ---
-        Image hoverImg = new ImageIcon("src/resources/images/hoverIcon.png").getImage();
+        Image hoverImg = new ImageIcon("src/resources/images/hoverIcon.png").getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
         customHoverCursor = java.awt.Toolkit.getDefaultToolkit().createCustomCursor(hoverImg, hotspot, "Hover Cursor");
     }
 
@@ -94,5 +94,5 @@ public abstract class BasePanel extends JPanel {
         return lbl;
     }
 
-    protected Color bgColor() { return new Color(235, 245, 255); }
+    protected Color bgColor() { return new Color(220, 245, 230); }
 }
