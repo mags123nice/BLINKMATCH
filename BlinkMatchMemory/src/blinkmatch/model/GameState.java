@@ -1,16 +1,15 @@
 package blinkmatch.model;
 
-/**
- * Tracks the current state of a game session.
- * ENCAPSULATION: internal state is hidden; consumers call high-level methods.
- */
+// Tracks the current state of a game session.
+// ENCAPSULATION: internal state is hidden; consumers call high-level methods.
+
 public class GameState {
 
     private int     timeRemaining;
     private final int totalPairs;
     private int     matchedPairs;
     private boolean running;
-    
+
 
     public GameState(int startTime, int totalPairs) {
         this.timeRemaining = startTime;
@@ -19,7 +18,7 @@ public class GameState {
         this.running       = false; 
     }
 
-    // ---------- getters ----------
+    // Getters
     public int     getTimeRemaining()  { 
         return timeRemaining; 
     }
@@ -33,7 +32,7 @@ public class GameState {
         return running; 
     }
 
-    // ---------- setters / mutators ----------
+    // Setters and Mutators
     public void setTimeRemaining(int t)  { 
         this.timeRemaining = t; 
     }
@@ -47,7 +46,7 @@ public class GameState {
         this.matchedPairs++; 
     }
 
-    // ---------- state checks ----------
+    // State Checks
     public boolean isComplete() { 
         return matchedPairs >= totalPairs; 
     }
