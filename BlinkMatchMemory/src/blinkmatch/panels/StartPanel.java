@@ -86,6 +86,7 @@ public class StartPanel extends BasePanel{
         getActionMap().put("start", new AbstractAction() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 onExit();
+                SoundPlayer.playClickEffect();
                 cardLayout.show(GameWindow.container, "GAME");
             }
         });

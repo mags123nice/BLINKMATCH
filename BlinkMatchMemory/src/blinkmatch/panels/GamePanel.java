@@ -284,22 +284,34 @@ public class GamePanel extends BasePanel {
     private void bindKeys() {
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('R'), "restart");
         getActionMap().put("restart", new AbstractAction() {
-            public void actionPerformed(java.awt.event.ActionEvent e) { restartGame(); }
+            @Override
+            public void actionPerformed( java.awt.event.ActionEvent e) 
+            { 
+                restartGame();
+                SoundPlayer.playClickEffect();
+            }
         });
 
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('E'), "exit");
         getActionMap().put("exit", new AbstractAction() {
-            public void actionPerformed(java.awt.event.ActionEvent e) {
+
+            @Override
+            public void actionPerformed( java.awt.event.ActionEvent e) 
+            { 
                 onExit();
+                SoundPlayer.playClickEffect();
                 cardLayout.show(GameWindow.container, "START");
             }
+            
         });
         
         // Pressing Escape or 'P' pauses/unpauses
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "togglePause");
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('P'), "togglePause");
         getActionMap().put("togglePause", new AbstractAction() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
+                SoundPlayer.playClickEffect();
                 if (isPaused) resumeGame();
                 else pauseGame();
             }
