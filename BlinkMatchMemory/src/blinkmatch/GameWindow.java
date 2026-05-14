@@ -48,8 +48,8 @@ public class GameWindow {
         container.add(helpPanel,  "HELP");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(650, 750);
-        frame.setMinimumSize(new Dimension(460, 500));
+       // frame.setSize(650, 750);
+        frame.setMinimumSize(new Dimension(750, 600));
         frame.setLocationRelativeTo(null);
         frame.add(container);
 
