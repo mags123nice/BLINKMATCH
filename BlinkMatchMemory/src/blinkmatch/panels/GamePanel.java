@@ -711,7 +711,10 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
         }
 
         boolean isNewHighScore = player.getScore() > GameWindow.highScore;
-        if (isNewHighScore) GameWindow.highScore = player.getScore();
+        if (isNewHighScore) {
+            // 2. IMPORTANT: Save to the file so it persists after closing the app!
+            GameWindow.saveHighScore(player.getScore()); 
+        };
 
         String msg =
                 "Moves: " + player.getMoves() +
@@ -720,6 +723,7 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
 
         if (isNewHighScore) {
             msg += "\n\n🏆 NEW HIGH SCORE! 🏆";
+            
         }
 
         // TEXT AREA styling directly here (no shared style vars)
