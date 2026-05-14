@@ -41,6 +41,7 @@ public class GamePanel extends BasePanel {
     private JLabel   timerLabel, weatherLabel, scoreLabel;
     private JPanel   gridPanel;
     private JButton[] cardButtons;
+    private javax.swing.Timer delay;
     
     // ── Layered Pane Components (For Pause Menu) ─────────────────────────────
     private JPanel pauseOverlay;
@@ -70,17 +71,13 @@ public class GamePanel extends BasePanel {
     private static final int STORM_TIME  = 30;   // seconds remaining when storm hits
 
     // ── CARDS ───────────────────────────────────────────────────────────────
-    int BACK_SIZE=275;
-    private static final ImageIcon Card_Back  = new ImageIcon("src/resources/images/cardback.png");
-    Image scaledCard = Card_Back.getImage().getScaledInstance(BACK_SIZE, BACK_SIZE, Image.SCALE_SMOOTH);
-    ImageIcon ICON_FACE_DOWN = new ImageIcon(scaledCard);
+    private static final String PATH_CARD_BACK = "src/resources/images/cardback.png";
+    private static final String PATH_STORM_BACK = "src/resources/images/stormIcon.png";
+    private static final Color SUNNY_ORANGE = new Color(255, 170, 50);
+    private static final Color STORMY_BLUE   = new Color(44, 62, 80);
 
     private static final Color COLOR_FACE_UP    = Color.WHITE;
     private static final Color COLOR_MATCHED    = new Color(144, 238, 144);
-
-    private static final ImageIcon Storm_Back = new ImageIcon("src/resources/images/stormIcon.png");
-    Image scaledStorm = Storm_Back.getImage().getScaledInstance(BACK_SIZE, BACK_SIZE, Image.SCALE_SMOOTH);
-    ImageIcon ICON_STORM_DOWN = new ImageIcon(scaledStorm);
 
     // ════════════════════════════════════════════════════════════════════════
     public GamePanel(CardLayout cardLayout) {
@@ -168,7 +165,7 @@ public class GamePanel extends BasePanel {
 
     private JPanel buildHUD() {
         JPanel hud = new JPanel(new GridLayout(1, 3, 4, 0));
-        hud.setBackground(new Color(200, 225, 255));
+        hud.setBackground(SUNNY_ORANGE);
         hud.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
 
         Font f = new Font("SansSerif", Font.BOLD, 14);
@@ -192,7 +189,7 @@ public class GamePanel extends BasePanel {
         for (int i = 0; i < GRID_SIZE; i++) {
             JButton btn = new JButton();
             btn.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 26));
-            btn.setIcon(ICON_FACE_DOWN);
+        
             btn.setOpaque(true);
             btn.setBorderPainted(true);
             btn.setFocusPainted(false);
@@ -393,35 +390,29 @@ public class GamePanel extends BasePanel {
     }
 
     private void buildCards() {
-    int CARD_SIZE = 175; // Adjust this number to fit your grid buttons
-    List<ImageIcon> symbolsList = new ArrayList<>();
-    
+    // Dynamically calculate size based on the gridPanel's current size
+        int cardW = gridPanel.getWidth() / 4 - 10; // 4 columns, minus gap
+        int cardH = gridPanel.getHeight() / 4 - 10; // 4 rows, minus gap
 
-    for (ImageIcon rawIcon : SYMBOLS) {
-        // 1. Get the raw image from the ImageIcon
-        Image img = rawIcon.getImage();
-        
-        // 2. Create the scaled version
-        Image scaledImg = img.getScaledInstance(CARD_SIZE, CARD_SIZE, Image.SCALE_SMOOTH);
-        
-        // 3. Wrap it back into an ImageIcon
-        ImageIcon finishedIcon = new ImageIcon(scaledImg);
+        List<ImageIcon> symbolsList = new ArrayList<>();
+        for (ImageIcon rawIcon : SYMBOLS) {
+            Image img = rawIcon.getImage();
+            // This stretches the fruit to perfectly fill the button
+            Image scaledImg = img.getScaledInstance(cardW, cardH, Image.SCALE_SMOOTH);
+            ImageIcon finishedIcon = new ImageIcon(scaledImg);
 
-        // 4. Add TWO to the list (one for each card in the pair)
-        symbolsList.add(finishedIcon);
-        symbolsList.add(finishedIcon);
-    }
-
-    // Shuffle so the pairs aren't sitting next to each other
-            Collections.shuffle(symbolsList);
-
-            cards = new Card[GRID_SIZE];
-            for (int i = 0; i < GRID_SIZE; i++) {
-        // Make sure your Card constructor accepts (int, ImageIcon)
-               cards [i] = new Card(i, symbolsList.get(i));
-                resetButtonVisual(i, ICON_FACE_DOWN);
-            }
+            symbolsList.add(finishedIcon);
+            symbolsList.add(finishedIcon);
         }
+
+        Collections.shuffle(symbolsList);
+        cards = new Card[GRID_SIZE];
+        for (int i = 0; i < GRID_SIZE; i++) {
+            cards[i] = new Card(i, symbolsList.get(i));
+        // Pass the path to the card back
+            resetButtonVisual(i, getStretchedIcon(PATH_CARD_BACK), SUNNY_ORANGE);
+        }
+    }
     
 
     // ── Timer ────────────────────────────────────────────────────────────────
@@ -467,10 +458,18 @@ public class GamePanel extends BasePanel {
         currentWeather = weather;
         weatherLabel.setText(currentWeather.getDisplayText());
 
-        if (currentWeather.causesShuffle()) {
-            shuffleUnmatched();
-        }
+    if (currentWeather instanceof StormyWeather) { //Change color depending on weather
+        gridPanel.setBackground(STORMY_BLUE); // Dark Stormy Blue
+        this.setBackground(STORMY_BLUE);      // Main Panel Blue
+    } else {
+        gridPanel.setBackground(bgColor());             // Back to Sunny Color
+        this.setBackground(bgColor());
     }
+
+    if (currentWeather.causesShuffle()) {
+        shuffleUnmatched();
+    }
+}
 
     private void shuffleUnmatched() {
         List<Integer> unmatchedIdx = new ArrayList<>();
@@ -484,13 +483,14 @@ public class GamePanel extends BasePanel {
         }
         Collections.shuffle(unmatchedSym);
 
-        for (int i = 0; i < unmatchedIdx.size(); i++) {
-            int idx = unmatchedIdx.get(i);
-            cards[idx] = new Card(idx, unmatchedSym.get(i));
-            resetButtonVisual(idx, ICON_STORM_DOWN);
-        }
-        flippedIndices.clear();
+    for (int i = 0; i < unmatchedIdx.size(); i++) {
+        int idx = unmatchedIdx.get(i);
+        cards[idx] = new Card(idx, unmatchedSym.get(i));
+        
+            resetButtonVisual(idx, getStretchedIcon(PATH_STORM_BACK), STORMY_BLUE);
     }
+    flippedIndices.clear();
+}
 
     // ── Card interaction ─────────────────────────────────────────────────────
 
@@ -539,17 +539,18 @@ public class GamePanel extends BasePanel {
             }
         } else {
             // flip back after short delay
-            javax.swing.Timer delay = new javax.swing.Timer(700, e -> {
-                cards[i1].setFaceUp(false);
-                cards[i2].setFaceUp(false);
-                resetButtonVisual(i1, ICON_FACE_DOWN);
-                resetButtonVisual(i2, ICON_FACE_DOWN);
+            // Inside the flipTimer delay logic
+        delay = new javax.swing.Timer(700, e -> {
+            cards[i1].setFaceUp(false);
+            cards[i2].setFaceUp(false);
+    
+        Color currentBG = (currentWeather instanceof StormyWeather) ? STORMY_BLUE : SUNNY_ORANGE;
+
+            resetButtonVisual(i1, getStretchedIcon(PATH_CARD_BACK), currentBG);
+            resetButtonVisual(i2, getStretchedIcon(PATH_CARD_BACK), currentBG);
+    
                 flippedIndices.clear();
-                
-                // Only allow flips again if the user hasn't paused the game during the delay!
-                if (!isPaused) {
-                    canFlip = true;
-                }
+                if (!isPaused) canFlip = true;
             });
             delay.setRepeats(false);
             delay.start();
@@ -558,13 +559,12 @@ public class GamePanel extends BasePanel {
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-    private void resetButtonVisual(int idx, ImageIcon bg) {
-        cardButtons[idx].setText("");
-        cardButtons[idx].setIcon(null); 
-        cardButtons[idx].setIcon(bg);
-        cardButtons[idx].setEnabled(true);
-    }
-
+private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) {
+    cardButtons[idx].setText("");
+    cardButtons[idx].setIcon(icon);
+    cardButtons[idx].setBackground(bgColor); 
+    cardButtons[idx].setEnabled(true);
+}
     private void refreshHUD() {
         timerLabel.setText("Timer: "   + gameState.getTimeRemaining());
         scoreLabel.setText("Score: "   + player.getScore());
@@ -606,4 +606,20 @@ public class GamePanel extends BasePanel {
         if (choice == JOptionPane.YES_OPTION) restartGame();
         else { onExit(); cardLayout.show(GameWindow.container, "START"); }
     }
+
+    private ImageIcon getStretchedIcon(String path) {
+        ImageIcon raw = new ImageIcon(path);
+        // Use the first button as a size reference
+            int w = cardButtons[0].getWidth();
+            int h = cardButtons[0].getHeight();
+
+        // If the grid hasn't rendered yet (first run), use a sensible default
+            if (w <= 0) w = 200; 
+            if (h <= 0) h = 200;
+
+        Image scaled = raw.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaled);
+    }
+
+
 }
