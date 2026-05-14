@@ -1,5 +1,7 @@
 package blinkmatch.model;
 
+import javax.swing.ImageIcon;
+
 /**
  * Represents a single card on the game board.
  * ENCAPSULATION: all fields are private, accessed only via getters/setters.
@@ -7,11 +9,11 @@ package blinkmatch.model;
 public class Card {
 
     private final int id;
-    private final String symbol;
+    private final ImageIcon symbol;
     private boolean faceUp;
     private boolean matched;
 
-    public Card(int id, String symbol) {
+    public Card(int id, ImageIcon symbol) {
         this.id     = id;
         this.symbol = symbol;
         this.faceUp = false;
@@ -20,7 +22,7 @@ public class Card {
 
     // ---------- getters ----------
     public int     getId()       { return id; }
-    public String  getSymbol()   { return symbol; }
+    public ImageIcon  getSymbol()   { return symbol; }
     public boolean isFaceUp()    { return faceUp; }
     public boolean isMatched()   { return matched; }
 
