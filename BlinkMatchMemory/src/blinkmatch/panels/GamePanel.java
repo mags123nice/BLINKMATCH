@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.Random;
 
 import javax.sound.sampled.AudioInputStream;
@@ -54,6 +55,11 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+=======
+
+import javax.sound.sampled.*;
+import javax.swing.*;
+>>>>>>> parent of f0ae169 (game over)
 
 public class GamePanel extends BasePanel {
 
@@ -74,9 +80,6 @@ public class GamePanel extends BasePanel {
     // ── Pause Menu Components ─────────────────────────────
     private JPanel pauseOverlay;
     private boolean isPaused = false;
-
-    //for gameover
-    private JPanel gameOverOverlay;
 
     // ── Game loop ────────────────────────────────────────────────────────────
     private Timer countdownTimer;
@@ -136,19 +139,16 @@ public class GamePanel extends BasePanel {
         JPanel mainContent = new JPanel(new BorderLayout(8, 8));
         mainContent.setBackground(bgColor());
         mainContent.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-        mainContent.add(buildHUD(), BorderLayout.NORTH);
-        mainContent.add(buildGrid(), BorderLayout.CENTER);
+        mainContent.add(buildHUD(),    BorderLayout.NORTH);
+        mainContent.add(buildGrid(),   BorderLayout.CENTER);
         mainContent.add(buildButtons(), BorderLayout.SOUTH);
         
         // Pause Menu
         pauseOverlay = buildPauseMenu();
-        gameOverOverlay = buildGameOver();
         
         // 3. Add both to the LayeredPane
-       layeredPane.add(mainContent, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(mainContent, JLayeredPane.DEFAULT_LAYER);
         layeredPane.add(pauseOverlay, JLayeredPane.MODAL_LAYER);
-        layeredPane.add(gameOverOverlay, JLayeredPane.POPUP_LAYER);
-
         
   
         layeredPane.addComponentListener(new ComponentAdapter() {
@@ -158,9 +158,6 @@ public class GamePanel extends BasePanel {
                 int h = layeredPane.getHeight();
                 mainContent.setBounds(0, 0, w, h);
                 pauseOverlay.setBounds(0, 0, w, h);
-                if (gameOverOverlay != null) {
-                    gameOverOverlay.setBounds(0, 0, w, h);
-                }
             }
         });
 
@@ -609,128 +606,40 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
         weatherLabel.setText(currentWeather.getDisplayText());
     }
 
-    private JLabel gameOverTitle;
-    private JTextArea gameOverStats;
-
-    private JPanel buildGameOver() {
-
-        JPanel overlay = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawImage(
-                    new ImageIcon("src/resources/images/pausedImage.png").getImage(),
-                    0, 0, getWidth(), getHeight(), null
-                );
-            }
-        };
-
-        overlay.setLayout(new GridBagLayout());
-        overlay.setOpaque(false);
-        overlay.setVisible(false);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.insets = new Insets(10, 20, 10, 20);
-        gbc.anchor = GridBagConstraints.CENTER;
-
-        // ── TITLE ──
-        gameOverTitle = new JLabel("", SwingConstants.CENTER);
-        gameOverTitle.setFont(new Font("SansSerif", Font.BOLD, 28));
-        gameOverTitle.setForeground(Color.WHITE);
-
-        // ── STATS ──
-        gameOverStats = new JTextArea(6, 20);
-        gameOverStats.setEditable(false);
-        gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 16));
-        gameOverStats.setOpaque(false);
-        gameOverStats.setForeground(Color.WHITE);
-
-        // ── BUTTONS ──
-        ImageIcon restartIcon = new ImageIcon("src/resources/images/restartIcon.png");
-        ImageIcon exitIcon = new ImageIcon("src/resources/images/quitIcon.png");
-
-        JButton restartBtn = makeButton(restartIcon, 180, 80);
-        JButton exitBtn = makeButton(exitIcon, 180, 80);
-
-        restartBtn.addActionListener(e -> {
-            hideGameOver();
-            restartGame();
-        });
-
-        exitBtn.addActionListener(e -> {
-            hideGameOver();
-            onExit();
-            cardLayout.show(GameWindow.container, "START");
-        });
-
-        // ── ADD IN ORDER ──
-        gbc.gridy = 0;
-        overlay.add(gameOverTitle, gbc);
-
-        gbc.gridy = 1;
-        overlay.add(gameOverStats, gbc);
-
-        gbc.gridy = 2;
-        overlay.add(restartBtn, gbc);
-
-        gbc.gridy = 3;
-        overlay.add(exitBtn, gbc);
-
-        return overlay;
-    }
-
-    private void isHighScore(){
-        boolean isNewHighScore = false;
+    private void showGameOver(boolean won) {
+        String msg;
+        
+        if (won) {
+            int timeBonus = gameState.getTimeRemaining() * 10;
+            player.addScore(timeBonus);
+            
+            // --- HIGH SCORE LOGIC ---
+            boolean isNewHighScore = false;
             if (player.getScore() > GameWindow.highScore) {
                 GameWindow.highScore = player.getScore();
                 isNewHighScore = true;
             }
-    }
-
-    private void showGameOver(boolean won) {
-
-        stopTimer();
-        canFlip = false;
-        isPaused = true;
-
-        if (gameOverOverlay == null) return;
-
-        gameOverOverlay.setVisible(true);
-        gameOverOverlay.revalidate();
-        gameOverOverlay.repaint();
-        gameOverOverlay.requestFocusInWindow();
-
-        gameOverTitle.setFont(new Font("Monospaced", Font.BOLD, won ? 34 : 30));
-
-        if (won) {
-            gameOverTitle.setForeground(new Color(0, 220, 0)); // GREEN WIN
-            gameOverTitle.setText("🏆 YOU WIN!");
+            
+            msg = "You Win!\n"
+                + "Time Bonus: +" + timeBonus + "\n"
+                + "Final Score: " + player.getScore() + "\n"
+                + "Moves: " + player.getMoves();
+                
+            // Add a fun message if they broke the record!
+            if (isNewHighScore) {
+                msg += "\n\n🏆 NEW HIGH SCORE! 🏆";
+            }
+            
         } else {
-            gameOverTitle.setForeground(new Color(220, 0, 0)); // RED LOSE
-            gameOverTitle.setText("YOU LOSE!");
+            msg = "Time's Up!\nFinal Score: " + player.getScore();
         }
 
-        boolean isNewHighScore = player.getScore() > GameWindow.highScore;
-        if (isNewHighScore) GameWindow.highScore = player.getScore();
+        int choice = JOptionPane.showConfirmDialog(
+                this, msg + "\n\nPlay again?", "Game Over",
+                JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 
-        String msg =
-                "Moves: " + player.getMoves() +
-                "\nScore: " + player.getScore() +
-                "\nTime Left: " + gameState.getTimeRemaining();
-
-        if (isNewHighScore) {
-            msg += "\n\n🏆 NEW HIGH SCORE! 🏆";
-        }
-
-        // TEXT AREA styling directly here (no shared style vars)
-        gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 16));
-        gameOverStats.setForeground(Color.WHITE);
-        gameOverStats.setText(msg);
-    }
-
-    private void hideGameOver() {
-        gameOverOverlay.setVisible(false);
+        if (choice == JOptionPane.YES_OPTION) restartGame();
+        else { onExit(); cardLayout.show(GameWindow.container, "START"); }
     }
 
     private ImageIcon getStretchedIcon(String path) { //Adjusts the image size to grid based on path
