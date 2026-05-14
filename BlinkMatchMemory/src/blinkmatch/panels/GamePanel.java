@@ -253,8 +253,10 @@ public class GamePanel extends BasePanel {
         JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         south.setBackground(bgColor());
 
-        ImageIcon pauseIcon = new ImageIcon("src/resources/images/pauseIcon.png");        
-        JButton pauseBtn = makeButton(pauseIcon, 50, 50);
+
+
+        ImageIcon pauseIcon = new ImageIcon("src/resources/images/pauseIcon3.png");        
+        pauseBtn = makeButton(pauseIcon, 150, 100);
 
         pauseBtn.addActionListener(e -> {
             ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon2.png");
@@ -410,7 +412,17 @@ public class GamePanel extends BasePanel {
         stopTimer();
         canFlip = false; 
         isPaused = true;
+        
+        
+        ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon2.png");
+        
+        pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(150,100, Image.SCALE_SMOOTH));
+        pauseBtn.setIcon(pausePicture);
+        pauseBtn.repaint();
+
         pauseOverlay.setVisible(true); 
+
+
         
     }
     
@@ -420,7 +432,7 @@ public class GamePanel extends BasePanel {
         canFlip = true;
         isPaused = false;
         
-        ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon2.png");
+        ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon3.png");
         
         pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(150,100, Image.SCALE_SMOOTH));
         pauseBtn.setIcon(pausePicture);
@@ -621,7 +633,7 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.drawImage(
-                    new ImageIcon("src/resources/images/pausedImage.png").getImage(),
+                    new ImageIcon("src/resources/images/gOverScreen.png").getImage(),
                     0, 0, getWidth(), getHeight(), null
                 );
             }
