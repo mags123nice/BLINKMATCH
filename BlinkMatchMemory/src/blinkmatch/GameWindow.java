@@ -8,13 +8,19 @@ import java.awt.CardLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+//File Reading
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Scanner;
+import java.io.IOException;
+
 public class GameWindow {
 
     private final JFrame     frame;
     private final CardLayout cardLayout = new CardLayout();
     public static JPanel  container;
     public static int highScore = 0;
-
+    private static final String HIGH_SCORE_FILE = "highscore.txt";
     private final BasePanel startPanel;
     private final GamePanel gamePanel;   
     private final BasePanel helpPanel;
@@ -22,6 +28,8 @@ public class GameWindow {
     private BasePanel currentPanel;
 
     public GameWindow() {
+        loadHighScore(); // Read the file before doing anything else
+    
         frame     = new JFrame("Blink Match Memory");
         frame.setResizable(false);
 
@@ -71,4 +79,33 @@ public class GameWindow {
         }
         currentPanel.onEnter();
     }
+
+    //Save High Scores
+
+
+public static void loadHighScore() {
+    try {
+        File file = new File(HIGH_SCORE_FILE);
+        if (file.exists()) {
+            Scanner scanner = new Scanner(file);
+            if (scanner.hasNextInt()) {
+                highScore = scanner.nextInt();
+            }
+            scanner.close();
+        }
+    } catch (IOException e) {
+        System.err.println("Could not load high score.");
+    }
+}
+
+public static void saveHighScore(int score) {
+    try {
+        PrintWriter writer = new PrintWriter(new File(HIGH_SCORE_FILE));
+        writer.print(score);
+        writer.close();
+        highScore = score; // Update the static variable in memory too
+    } catch (IOException e) {
+        System.err.println("Could not save high score.");
+    }
+}
 }
