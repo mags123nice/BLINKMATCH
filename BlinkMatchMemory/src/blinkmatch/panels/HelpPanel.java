@@ -16,6 +16,7 @@ public class HelpPanel extends BasePanel implements Runnable {
     
     private Image helpImg;
 
+
     public HelpPanel(CardLayout cardLayout) {
         super(cardLayout);
         startPanel();
@@ -100,8 +101,4 @@ public class HelpPanel extends BasePanel implements Runnable {
             null
         );
 
-    }
-
-    @Override public void onEnter() { /* nothing special needed */ }
-    @Override public void onExit()  { /* nothing special needed */ }
-}
+n p;
