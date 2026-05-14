@@ -66,15 +66,18 @@ public class StartPanel extends BasePanel{
         //helpBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         startBtn.addActionListener(e -> {
+            SoundPlayer.playClickEffect();
             onExit();
             cardLayout.show(GameWindow.container, "GAME");
         });
         helpBtn.addActionListener(e -> {
+            SoundPlayer.playClickEffect();
             onExit();
             cardLayout.show(GameWindow.container, "HELP");
         });
 
         quitButton.addActionListener(e -> {
+            SoundPlayer.playClickEffect();
             System.exit(0);
         });
 
@@ -83,6 +86,7 @@ public class StartPanel extends BasePanel{
         getActionMap().put("start", new AbstractAction() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 onExit();
+                SoundPlayer.playClickEffect();
                 cardLayout.show(GameWindow.container, "GAME");
             }
         });

@@ -4,7 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-import blinkmatch.GameWindow;
+import blinkmatch.*;
 
 /**
  * Help / instructions screen.
@@ -54,6 +54,7 @@ public class HelpPanel extends BasePanel implements Runnable {
 
         backBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         backBtn.addActionListener(e -> {
+            SoundPlayer.playClickEffect();
             onExit();
             cardLayout.show(GameWindow.container, "START");
         });
