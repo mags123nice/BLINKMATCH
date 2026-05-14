@@ -49,7 +49,9 @@ public class GameWindow {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
        // frame.setSize(650, 750);
-        frame.setMinimumSize(new Dimension(750, 600));
+        // frame.setMinimumSize(new Dimension(750, 750));
+        frame.setUndecorated(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.add(container);
 
