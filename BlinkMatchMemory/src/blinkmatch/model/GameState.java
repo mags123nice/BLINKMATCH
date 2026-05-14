@@ -11,6 +11,7 @@ public class GameState {
     private int     matchedPairs;
     private boolean running;
 
+
     public GameState(int startTime, int totalPairs) {
         this.timeRemaining = startTime;
         this.totalPairs    = totalPairs;
