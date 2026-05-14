@@ -223,10 +223,8 @@ public class GamePanel extends BasePanel {
         JButton pauseBtn = makeButton(pauseIcon, 50, 50);
 
         pauseBtn.addActionListener(e -> {
-
-
-                pauseGame();
-                pauseOverlay.repaint();
+            pauseGame();
+            pauseOverlay.repaint();
         });
 
         
@@ -245,11 +243,11 @@ public class GamePanel extends BasePanel {
             {
                 super.paintComponent(g);
                 g.drawImage(
-                    new ImageIcon("src/resources/PauseImage.png").getImage(),
+                    new ImageIcon("src/resources/images/PauseImage.png").getImage(),
                     0,
                     0,
                     750,
-                    600,
+                    750,
                     null);
             }
         }; 
@@ -272,15 +270,18 @@ public class GamePanel extends BasePanel {
         ImageIcon restartIcon = new ImageIcon("src/resources/images/restartIcon.png");
         ImageIcon exitIcon = new ImageIcon("src/resources/images/quitIcon.png");
         
-        JButton resumeBtn = makeButton(resumeIcon, 150,90);
-        JButton restartBtn = makeButton(restartIcon, 150,90);
-        JButton quitBtn    = makeButton(exitIcon, 150,90);
+        int buttonX = 150;
+        int buttonY = 175;
+        
+        JButton resumeBtn = makeButton(resumeIcon, buttonX,buttonY);
+        JButton restartBtn = makeButton(restartIcon, buttonX,buttonY);
+        JButton quitBtn    = makeButton(exitIcon, buttonX,buttonY);
 
         for (JButton btn : new JButton[]{resumeBtn, restartBtn, quitBtn}) {
             btn.setFont(new Font("SansSerif", Font.BOLD, 18));
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
             btn.setFocusPainted(false);
-            btn.setMaximumSize(new Dimension(200, 50));
+            btn.setMaximumSize(new Dimension(buttonX, buttonY));
         }
 
         resumeBtn.addActionListener(e -> resumeGame());
@@ -296,15 +297,19 @@ public class GamePanel extends BasePanel {
             cardLayout.show(GameWindow.container, "START");
         });
 
-        menuBox.add(pauseTitle);
-        menuBox.add(Box.createVerticalStrut(40)); // Space between title and buttons
-        menuBox.add(resumeBtn);
-        menuBox.add(Box.createVerticalStrut(15));
-        menuBox.add(restartBtn);
-        menuBox.add(Box.createVerticalStrut(15));
-        menuBox.add(quitBtn);
+        //menuBox.add(pauseTitle);
 
+        menuBox.add(Box.createVerticalGlue());
+        menuBox.add(resumeBtn);
+        menuBox.add(Box.createRigidArea(new Dimension(10, 10)));
+        menuBox.add(restartBtn);
+        menuBox.add(Box.createRigidArea(new Dimension(10, 10)));
+        menuBox.add(quitBtn);
+        menuBox.add(Box.createVerticalGlue());
+        
         overlay.add(menuBox);
+
+
         return overlay;
     }
 
@@ -372,6 +377,7 @@ public class GamePanel extends BasePanel {
         canFlip = false; // Prevent card clicks
         isPaused = true;
         pauseOverlay.setVisible(true); // Show the semi-transparent overlay
+        
     }
     
     private void resumeGame() {

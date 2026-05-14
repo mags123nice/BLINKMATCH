@@ -38,7 +38,7 @@ public class StartPanel extends BasePanel{
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBackground(bgColor());
 
-        setBorder(BorderFactory.createEmptyBorder(250, 60, 0, 60));
+        setBorder(BorderFactory.createEmptyBorder(450, 60, 0, 60));
         // panel.setImage(new Image(new File("src/resources/gifs/landscape.gif")));
         bg = new ImageIcon(
                         "src/resources/gifs/landscape.gif"
@@ -58,9 +58,14 @@ public class StartPanel extends BasePanel{
         subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // --- buttons ---
-        JButton startBtn =  makeButton(startIcon, 170, 150);
-        JButton quitButton =  makeButton(quitIcon,  125, 95);
-        JButton helpBtn  = makeButton(helpIcon,  125, 95);
+        int smolSizeX = 300;
+        int smolSizeY = 200;
+        int beegSizX = 400;
+        int beegSizY = 375;
+
+        JButton startBtn =  makeButton(startIcon, beegSizX, beegSizY);
+        JButton quitButton =  makeButton(quitIcon,  smolSizeX, smolSizeY);
+        JButton helpBtn  = makeButton(helpIcon,  smolSizeX, smolSizeY);
 
         //startBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         //helpBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
