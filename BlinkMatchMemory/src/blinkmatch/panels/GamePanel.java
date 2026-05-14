@@ -221,7 +221,7 @@ public class GamePanel extends BasePanel {
 
         ImageIcon resumeIcon = new ImageIcon("src/resources/images/resumeIcon.png");
         ImageIcon restartIcon = new ImageIcon("src/resources/images/restartIcon.png");
-        ImageIcon exitIcon = new ImageIcon("src/resources/images/exitIcon.png");
+        ImageIcon exitIcon = new ImageIcon("src/resources/images/quitIcon.png");
         
         JButton resumeBtn = makeButton(resumeIcon, 150,90);
         JButton restartBtn = makeButton(restartIcon, 150,90);

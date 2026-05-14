@@ -74,6 +74,10 @@ public class StartPanel extends BasePanel{
             cardLayout.show(GameWindow.container, "HELP");
         });
 
+        quitButton.addActionListener(e -> {
+            System.exit(0);
+        });
+
         // keyboard: S = start
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('S'), "start");
         getActionMap().put("start", new AbstractAction() {
