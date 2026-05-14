@@ -103,7 +103,7 @@ public class GamePanel extends BasePanel {
     
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
-    private static final int GAME_TIME   = 60;
+    private static final int GAME_TIME   = 1;
     private static final int STORM_MAX = 45; 
     private static final int STORM_MIN = 15;
     private int randomStormTime; 
@@ -639,6 +639,7 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
             }
         };
 
+        overlay.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         overlay.setLayout(new GridBagLayout());
         overlay.setOpaque(false);
         overlay.setVisible(false);
@@ -650,13 +651,13 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
 
         // ── TITLE ──
         gameOverTitle = new JLabel("", SwingConstants.CENTER);
-        gameOverTitle.setFont(new Font("SansSerif", Font.BOLD, 28));
+        gameOverTitle.setFont(new Font("SansSerif", Font.BOLD, 100));
         gameOverTitle.setForeground(Color.WHITE);
 
         // ── STATS ──
         gameOverStats = new JTextArea(6, 20);
         gameOverStats.setEditable(false);
-        gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 100));
         gameOverStats.setOpaque(false);
         gameOverStats.setForeground(Color.WHITE);
 
@@ -734,11 +735,11 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
                 "\nTime Left: " + gameState.getTimeRemaining();
 
         if (isNewHighScore) {
-            msg += "\n\n🏆 NEW HIGH SCORE! 🏆";
+            msg += "\n🏆 NEW HIGH SCORE! 🏆";
         }
 
         // TEXT AREA styling directly here (no shared style vars)
-        gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 40));
         gameOverStats.setForeground(Color.WHITE);
         gameOverStats.setText(msg);
     }
