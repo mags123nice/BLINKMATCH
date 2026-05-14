@@ -34,6 +34,7 @@ public class GamePanel extends BasePanel {
     private Player    player;
     private GameState gameState;
     private Card[]    cards;
+    JButton pauseBtn;
 
     // ── Weather (polymorphism: type is abstract Weather) ─────────────────────
     private Weather currentWeather;
@@ -53,6 +54,8 @@ public class GamePanel extends BasePanel {
     private final List<Integer> flippedIndices = new ArrayList<>();
     private boolean canFlip = true;
     private boolean stormTriggered = false;
+
+    private ImageIcon pausePicture = new ImageIcon("src/resources/images/pauseIcon3.png");
 
     // ── Constants ────────────────────────────────────────────────────────────
     private static final ImageIcon[] SYMBOLS = {
@@ -213,14 +216,20 @@ public class GamePanel extends BasePanel {
         south.setBackground(bgColor());
 
         // imageIcons 
-        ImageIcon pauseIcon = new ImageIcon("src/resources/images/pauseIcon.png");
+
         
 
         // Scaled these down to atleast 130x50 so all fit
         
-        JButton pauseBtn = makeButton(pauseIcon, 50, 50);
+        pauseBtn = makeButton(pausePicture, 150, 100);
 
         pauseBtn.addActionListener(e -> {
+            ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon2.png");
+            Dimension pauseButtonDimenstion = pauseBtn.getPreferredSize();
+            pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance((int)pauseButtonDimenstion.getWidth(),(int)pauseButtonDimenstion.getHeight(), Image.SCALE_SMOOTH));
+            pauseBtn.setIcon(pausePicture);
+            pauseBtn.repaint();
+
             pauseGame();
             pauseOverlay.repaint();
         });
@@ -257,7 +266,7 @@ public class GamePanel extends BasePanel {
 
 
 
-        overlay.setBorder(new EmptyBorder(125, 10, 10, 10));
+        overlay.setBorder(new EmptyBorder(110, 12, 12, 10));
         overlay.repaint();
         overlay.setBackground(Color.blue);
         overlay.setBackground(new Color(0, 0, 0)); // Semi-transparent black
@@ -271,7 +280,7 @@ public class GamePanel extends BasePanel {
         // gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;  // Do NOT stretch the buttons
         gbc.anchor = GridBagConstraints.CENTER; // Keep the whole group centered
-        gbc.insets = new Insets(10, 50, 10, 50);
+        gbc.insets = new Insets(15, 50, 15, 50);
 
         overlay.setOpaque(false);
 
@@ -411,6 +420,14 @@ public class GamePanel extends BasePanel {
         pauseOverlay.setVisible(false);
         canFlip = true;
         isPaused = false;
+
+        ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon2.png");
+        
+        pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(150,100, Image.SCALE_SMOOTH));
+        pauseBtn.setIcon(pausePicture);
+        pauseBtn.repaint();
+        
+
         
         // Re-start the timer where it left off
         countdownTimer = new javax.swing.Timer(1000, e -> tick());
