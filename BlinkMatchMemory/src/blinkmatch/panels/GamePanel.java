@@ -76,7 +76,7 @@ public class GamePanel extends BasePanel {
 
     private static final ImageIcon Storm_Back = new ImageIcon("src/resources/images/Avocado.png");
     Image scaledStorm = Storm_Back.getImage().getScaledInstance(BACK_SIZE, BACK_SIZE, Image.SCALE_SMOOTH);
-    ImageIcon ICON_STORM_DOWN = new ImageIcon(scaledCard);
+    ImageIcon ICON_STORM_DOWN = new ImageIcon(scaledStorm);
 
     // ════════════════════════════════════════════════════════════════════════
     public GamePanel(CardLayout cardLayout) {
