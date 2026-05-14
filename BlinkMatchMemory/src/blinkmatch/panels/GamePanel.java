@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -93,7 +94,10 @@ public class GamePanel extends BasePanel {
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
     private static final int GAME_TIME   = 60;
-    private static final int STORM_TIME  = 30;  
+    private static final int STORM_MAX = 45; 
+    private static final int STORM_MIN = 15;
+    private int randomStormTime; 
+    private final Random rand = new Random();  
 
     // ── CARDS ───────────────────────────────────────────────────────────────
     private static final String PATH_CARD_BACK = "src/resources/images/cardback.png";
@@ -360,6 +364,7 @@ public class GamePanel extends BasePanel {
     public void startGame() {
         player.reset();
         gameState.reset(GAME_TIME);
+        randomStormTime = rand.nextInt((STORM_MAX - STORM_MIN) + 1) + STORM_MIN;
         currentWeather  = new SunnyWeather();   
         stormTriggered  = false;
         flippedIndices.clear();
@@ -441,12 +446,12 @@ public class GamePanel extends BasePanel {
         timerLabel.setText("Timer: " + gameState.getTimeRemaining());
 
         // trigger storm once at STORM_TIME
-        if (!stormTriggered && gameState.getTimeRemaining() == STORM_TIME) {
+        if (!stormTriggered && gameState.getTimeRemaining() == randomStormTime) {
             stormTriggered = true;
             applyWeather(new StormyWeather());   
         }
         // revert to sunny 5 s later
-        if (stormTriggered && gameState.getTimeRemaining() == STORM_TIME - 5
+        if (stormTriggered && gameState.getTimeRemaining() == randomStormTime - 5
                 && currentWeather instanceof StormyWeather) {
             applyWeather(new SunnyWeather());
         }
