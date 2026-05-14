@@ -238,13 +238,15 @@ public class GamePanel extends BasePanel {
             @Override
             protected void paintComponent(Graphics g)
             {
+
                 super.paintComponent(g);
+                int  width = 1550;
                 g.drawImage(
                     new ImageIcon("src/resources/images/PauseImage.png").getImage(),
                     0,
                     0,
-                    750,
-                    750,
+                    width,
+                    880,
                     null);
             }
         }; 
@@ -264,7 +266,7 @@ public class GamePanel extends BasePanel {
         // gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;  // Do NOT stretch the buttons
         gbc.anchor = GridBagConstraints.CENTER; // Keep the whole group centered
-        gbc.insets = new Insets(30, 50, 30, 50);
+        gbc.insets = new Insets(10, 50, 10, 50);
 
         overlay.setOpaque(false);
 
@@ -274,8 +276,8 @@ public class GamePanel extends BasePanel {
         ImageIcon restartIcon = new ImageIcon("src/resources/images/restartIcon.png");
         ImageIcon exitIcon = new ImageIcon("src/resources/images/quitIcon.png");
         
-        int buttonX = 120;
-        int buttonY = 150;
+        int buttonX = 180;
+        int buttonY = 80;
         
         JButton resumeBtn = makeButton(resumeIcon, buttonX, buttonY);
         JButton restartBtn = makeButton(restartIcon, buttonX, buttonY);
