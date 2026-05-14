@@ -58,9 +58,9 @@ public class StartPanel extends BasePanel{
         subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // --- buttons ---
-        int smolSizeX = 300;
-        int smolSizeY = 200;
-        int beegSizX = 400;
+        int smolSizeX = 250;
+        int smolSizeY = 100;
+        int beegSizX = 425;
         int beegSizY = 375;
 
         JButton startBtn =  makeButton(startIcon, beegSizX, beegSizY);
