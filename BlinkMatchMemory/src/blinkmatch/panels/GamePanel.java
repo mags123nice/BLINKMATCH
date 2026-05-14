@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
+import javax.swing.border.*;
 
 /**
  * Main gameplay screen.
@@ -233,6 +234,9 @@ public class GamePanel extends BasePanel {
     }
     
     private JPanel buildPauseMenu() {
+
+
+
         // GridBagLayout automatically centers contents inside the panel
         JPanel overlay = new JPanel(){
             @Override
@@ -253,6 +257,7 @@ public class GamePanel extends BasePanel {
 
 
 
+        overlay.setBorder(new EmptyBorder(125, 10, 10, 10));
         overlay.repaint();
         overlay.setBackground(Color.blue);
         overlay.setBackground(new Color(0, 0, 0)); // Semi-transparent black
