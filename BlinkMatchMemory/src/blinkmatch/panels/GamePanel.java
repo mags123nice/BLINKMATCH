@@ -165,7 +165,7 @@ public class GamePanel extends BasePanel {
         cardButtons = new JButton[GRID_SIZE];
 
         for (int i = 0; i < GRID_SIZE; i++) {
-            JButton btn = new JButton();
+            JButton btn = makeButton( new ImageIcon("src/resources/images/cardback.png"), 300, 300);
             btn.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 26));
             btn.setBackground(COLOR_FACE_DOWN);
             btn.setOpaque(true);
