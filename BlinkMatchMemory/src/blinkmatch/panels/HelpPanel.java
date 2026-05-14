@@ -12,25 +12,29 @@ import javax.swing.border.TitledBorder;
  */
 public class HelpPanel extends BasePanel {
 
-    private final CardLayout cardLayout;
-    private final JPanel     container;
 
-    public HelpPanel(CardLayout cardLayout, JPanel container) {
-        this.cardLayout = cardLayout;
-        this.container  = container;
+    public HelpPanel(CardLayout cardLayout) {
+        super(cardLayout);
+        
+    }
+
+    public void startPanel()
+    {
+        // Method call so that panel is instantiated once setUp is happening
         initComponents();
+
     }
 
     @Override
     public void initComponents() {
-        panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBackground(bgColor());
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        setLayout(new BorderLayout(10, 10));
+        setBackground(bgColor());
+        setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
         // --- title ---
         JLabel title = makeTitle("How to Play");
         title.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        panel.add(title, BorderLayout.NORTH);
+        add(title, BorderLayout.NORTH);
 
         // --- content ---
         JPanel content = new JPanel(new GridLayout(1, 2, 16, 0));
@@ -55,21 +59,21 @@ public class HelpPanel extends BasePanel {
                     "Match all pairs to win."
                 }));
 
-        panel.add(content, BorderLayout.CENTER);
+        add(content, BorderLayout.CENTER);
 
         // --- back button ---
         //MAKE ICONIMAGE
-        JButton backBtn = makeButton(backIcon);
+        JButton backBtn = makeButton(backIcon, 700, 500);
         backBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         backBtn.addActionListener(e -> {
             onExit();
-            cardLayout.show(container, "START");
+            cardLayout.show(this, "START");
         });
 
         JPanel south = new JPanel();
         south.setBackground(bgColor());
         south.add(backBtn);
-        panel.add(south, BorderLayout.SOUTH);
+        add(south, BorderLayout.SOUTH);
     }
 
     private JPanel makeSection(String title, String[] lines) {

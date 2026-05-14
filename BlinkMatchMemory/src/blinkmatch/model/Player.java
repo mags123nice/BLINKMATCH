@@ -17,13 +17,23 @@ public class Player {
     }
 
     // ---------- getters ----------
-    public String getName()  { return name; }
-    public int    getScore() { return score; }
-    public int    getMoves() { return moves; }
+    public String getName()  { 
+        return name; 
+    }
+    public int    getScore() { 
+        return score; 
+    }
+    public int    getMoves() { 
+        return moves; 
+    }
 
     // ---------- controlled mutators ----------
-    public void addScore(int points)  { this.score += points; }
-    public void incrementMoves()      { this.moves++; }
+    public void addScore(int points)  { 
+        this.score += points; 
+    }
+    public void incrementMoves()      { 
+        this.moves++; 
+    }
 
     public void reset() {
         this.score = 0;

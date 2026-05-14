@@ -1,5 +1,6 @@
 package blinkmatch.panels;
 
+import blinkmatch.GameWindow;
 import blinkmatch.model.Card;
 import blinkmatch.model.GameState;
 import blinkmatch.model.Player;
@@ -16,17 +17,13 @@ import javax.swing.*;
  * Main gameplay screen.
  *
  * All four OOP pillars are active here:
- *   ENCAPSULATION  — Card / Player / GameState fields are private.
- *   ABSTRACTION    — Weather used only via abstract type; BasePanel lifecycle used.
- *   INHERITANCE    — extends BasePanel, inherits makeButton() / bgColor() etc.
- *   POLYMORPHISM   — currentWeather variable is Weather; causesShuffle() /
- *                    getDisplayText() dispatch to the right subclass at runtime.
+ * ENCAPSULATION  — Card / Player / GameState fields are private.
+ * ABSTRACTION    — Weather used only via abstract type; BasePanel lifecycle used.
+ * INHERITANCE    — extends BasePanel, inherits makeButton() / bgColor() etc.
+ * POLYMORPHISM   — currentWeather variable is Weather; causesShuffle() /
+ * getDisplayText() dispatch to the right subclass at runtime.
  */
 public class GamePanel extends BasePanel {
-
-    // ── CardLayout navigation ────────────────────────────────────────────────
-    private final CardLayout cardLayout;
-    private final JPanel     container;
 
     // ── Game data (encapsulated model objects) ───────────────────────────────
     private Player    player;
@@ -40,6 +37,10 @@ public class GamePanel extends BasePanel {
     private JLabel   timerLabel, weatherLabel, scoreLabel;
     private JPanel   gridPanel;
     private JButton[] cardButtons;
+    
+    // ── Layered Pane Components (For Pause Menu) ─────────────────────────────
+    private JPanel pauseOverlay;
+    private boolean isPaused = false;
 
     // ── Game loop ────────────────────────────────────────────────────────────
     private javax.swing.Timer countdownTimer;
@@ -58,6 +59,7 @@ public class GamePanel extends BasePanel {
         "\uD83C\uDF49", // 🍉
         "\uD83C\uDF51"  // 🍑
     };
+
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
     private static final int GAME_TIME   = 60;
@@ -70,9 +72,9 @@ public class GamePanel extends BasePanel {
     private static final Color COLOR_STORM_DOWN = new Color(100, 149, 200);
 
     // ════════════════════════════════════════════════════════════════════════
-    public GamePanel(CardLayout cardLayout, JPanel container) {
-        this.cardLayout = cardLayout;
-        this.container  = container;
+    public GamePanel(CardLayout cardLayout) {
+        super(cardLayout);
+        
         this.player     = new Player("Player 1");
         this.gameState  = new GameState(GAME_TIME, TOTAL_PAIRS);
         initComponents();
@@ -82,22 +84,58 @@ public class GamePanel extends BasePanel {
 
     @Override
     public void initComponents() {
-        panel = new JPanel(new BorderLayout(8, 8));
-        panel.setBackground(bgColor());
-        panel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        setLayout(new BorderLayout()); // Root layout
+        
+        JLayeredPane layeredPane = new JLayeredPane();
+        
+        // 1. Create the Main Game Content (Bottom Layer)
+        JPanel mainContent = new JPanel(new BorderLayout(8, 8));
+        mainContent.setBackground(bgColor());
+        mainContent.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+        mainContent.add(buildHUD(),    BorderLayout.NORTH);
+        mainContent.add(buildGrid(),   BorderLayout.CENTER);
+        mainContent.add(buildButtons(), BorderLayout.SOUTH);
+        
+        // 2. Create the Pause Overlay (Top Layer)
+        pauseOverlay = buildPauseMenu();
+        
+        // 3. Add both to the LayeredPane
+        layeredPane.add(mainContent, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(pauseOverlay, JLayeredPane.MODAL_LAYER);
+        
+        // 4. Because JLayeredPane uses a null layout, we must dynamically resize 
+        // our panels whenever the window size changes.
+        layeredPane.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                int w = layeredPane.getWidth();
+                int h = layeredPane.getHeight();
+                mainContent.setBounds(0, 0, w, h);
+                pauseOverlay.setBounds(0, 0, w, h);
+            }
+        });
 
-        panel.add(buildHUD(),    BorderLayout.NORTH);
-        panel.add(buildGrid(),   BorderLayout.CENTER);
-        panel.add(buildButtons(), BorderLayout.SOUTH);
-
+        add(layeredPane, BorderLayout.CENTER);
         bindKeys();
+
+        // Native Swing fix: Start game ONLY when panel is shown
+        this.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                if (!isPaused && !gameState.isRunning()) {
+                    startGame();
+                }
+            }
+            @Override
+            public void componentHidden(java.awt.event.ComponentEvent e) {
+                stopTimer();
+            }
+        });
     }
 
-    /** Called by GameWindow right before GAME panel is shown. */
     @Override
-    public void onEnter() { startGame(); }
+    public void onEnter() { }
 
-    /** Called by GameWindow right before GAME panel is hidden. */
     @Override
     public void onExit()  { stopTimer(); }
 
@@ -133,7 +171,7 @@ public class GamePanel extends BasePanel {
             btn.setOpaque(true);
             btn.setBorderPainted(true);
             btn.setFocusPainted(false);
-            btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            btn.setCursor(customHoverCursor);
 
             final int idx = i;
             btn.addActionListener(e -> onCardClicked(idx));
@@ -144,45 +182,109 @@ public class GamePanel extends BasePanel {
     }
 
     private JPanel buildButtons() {
-        JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 14, 4));
+        // Reduced the horizontal gap from 30 to 10 fix pushed off screen
+        JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         south.setBackground(bgColor());
 
-        //imageIcons 
+        // imageIcons 
+        ImageIcon pauseIcon = new ImageIcon("src/resources/images/pauseIcon.png");
+        
+
+        // Scaled these down to atleast 130x50 so all fit
+        
+        JButton pauseBtn = makeButton(pauseIcon, 50, 50);
+
+        pauseBtn.addActionListener(e -> pauseGame());
+
+        
+
+        // Add them in this exact order to force PAUSE into the middle
+        south.add(pauseBtn);
+        
+        return south;
+    }
+    
+    private JPanel buildPauseMenu() {
+        // GridBagLayout automatically centers contents inside the panel
+        JPanel overlay = new JPanel(new GridBagLayout()); 
+        overlay.setBackground(new Color(0, 0, 0)); // Semi-transparent black
+        overlay.setVisible(false); // Hidden by default
+
+        JPanel menuBox = new JPanel();
+        menuBox.setLayout(new BoxLayout(menuBox, BoxLayout.Y_AXIS));
+        menuBox.setOpaque(false);
+
+        JLabel pauseTitle = new JLabel("GAME PAUSED");
+        pauseTitle.setFont(new Font("SansSerif", Font.BOLD, 40));
+        pauseTitle.setForeground(Color.WHITE);
+        pauseTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        ImageIcon resumeIcon = new ImageIcon("src/resources/images/resumeIcon.png");
         ImageIcon restartIcon = new ImageIcon("src/resources/images/restartIcon.png");
-        ImageIcon exitIcon = new ImageIcon("src/resources/images/restartIcon.png");
+        ImageIcon exitIcon = new ImageIcon("src/resources/images/exitIcon.png");
+        
+        JButton resumeBtn = makeButton(resumeIcon, 150,90);
+        JButton restartBtn = makeButton(restartIcon, 150,90);
+        JButton quitBtn    = makeButton(exitIcon, 150,90);
 
-        JButton restartBtn = makeButton(restartIcon);
-        JButton exitBtn    = makeButton(exitIcon);
+        for (JButton btn : new JButton[]{resumeBtn, restartBtn, quitBtn}) {
+            btn.setFont(new Font("SansSerif", Font.BOLD, 18));
+            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+            btn.setFocusPainted(false);
+            btn.setMaximumSize(new Dimension(200, 50));
+        }
 
-        restartBtn.addActionListener(e -> restartGame());
-        exitBtn.addActionListener(e -> {
+        resumeBtn.addActionListener(e -> resumeGame());
+        
+        restartBtn.addActionListener(e -> { 
+            resumeGame(); 
+            restartGame(); 
+        });
+        
+        quitBtn.addActionListener(e -> {
+            resumeGame();
             onExit();
-            cardLayout.show(container, "START");
+            cardLayout.show(GameWindow.container, "START");
         });
 
-        south.add(restartBtn);
-        south.add(exitBtn);
-        return south;
+        menuBox.add(pauseTitle);
+        menuBox.add(Box.createVerticalStrut(40)); // Space between title and buttons
+        menuBox.add(resumeBtn);
+        menuBox.add(Box.createVerticalStrut(15));
+        menuBox.add(restartBtn);
+        menuBox.add(Box.createVerticalStrut(15));
+        menuBox.add(quitBtn);
+
+        overlay.add(menuBox);
+        return overlay;
     }
 
     private void bindKeys() {
-        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-             .put(KeyStroke.getKeyStroke('R'), "restart");
-        panel.getActionMap().put("restart", new AbstractAction() {
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('R'), "restart");
+        getActionMap().put("restart", new AbstractAction() {
             public void actionPerformed(java.awt.event.ActionEvent e) { restartGame(); }
         });
 
-        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-             .put(KeyStroke.getKeyStroke('E'), "exit");
-        panel.getActionMap().put("exit", new AbstractAction() {
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('E'), "exit");
+        getActionMap().put("exit", new AbstractAction() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 onExit();
-                cardLayout.show(container, "START");
+                cardLayout.show(GameWindow.container, "START");
+            }
+        });
+        
+        // Pressing Escape or 'P' pauses/unpauses
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "togglePause");
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('P'), "togglePause");
+        getActionMap().put("togglePause", new AbstractAction() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                if (isPaused) resumeGame();
+                else pauseGame();
             }
         });
     }
 
-    // ── Game flow ────────────────────────────────────────────────────────────
+    // ── Game flow & Pause Logic ──────────────────────────────────────────────
 
     public void startGame() {
         player.reset();
@@ -191,13 +293,37 @@ public class GamePanel extends BasePanel {
         stormTriggered  = false;
         flippedIndices.clear();
         canFlip = true;
+        isPaused = false;
+        pauseOverlay.setVisible(false);
 
         buildCards();
         refreshHUD();
         startTimer();
     }
 
-    public void restartGame() { startGame(); }
+    public void restartGame() { 
+        startGame(); 
+    }
+    
+    private void pauseGame() {
+        if (!gameState.isRunning() || isPaused) return; // Don't pause if game is over
+        stopTimer();
+        canFlip = false; // Prevent card clicks
+        isPaused = true;
+        pauseOverlay.setVisible(true); // Show the semi-transparent overlay
+    }
+    
+    private void resumeGame() {
+        if (!isPaused) return;
+        pauseOverlay.setVisible(false);
+        canFlip = true;
+        isPaused = false;
+        
+        // Re-start the timer where it left off
+        countdownTimer = new javax.swing.Timer(1000, e -> tick());
+        countdownTimer.start();
+        gameState.setRunning(true);
+    }
 
     private void buildCards() {
         List<String> symbols = new ArrayList<>();
@@ -221,8 +347,10 @@ public class GamePanel extends BasePanel {
     }
 
     private void stopTimer() {
-        if (countdownTimer != null) countdownTimer.stop();
-        gameState.setRunning(false);
+        if (countdownTimer != null) {
+            countdownTimer.stop();
+            gameState.setRunning(false);
+        }
     }
 
     private void tick() {
@@ -248,10 +376,6 @@ public class GamePanel extends BasePanel {
 
     // ── Weather (polymorphism) ───────────────────────────────────────────────
 
-    /**
-     * Applies weather effects via the abstract Weather type.
-     * POLYMORPHISM: causesShuffle() and getDisplayText() resolve at runtime.
-     */
     private void applyWeather(Weather weather) {
         currentWeather = weather;
         weatherLabel.setText(currentWeather.getDisplayText());
@@ -334,7 +458,11 @@ public class GamePanel extends BasePanel {
                 resetButtonVisual(i1, COLOR_FACE_DOWN);
                 resetButtonVisual(i2, COLOR_FACE_DOWN);
                 flippedIndices.clear();
-                canFlip = true;
+                
+                // Only allow flips again if the user hasn't paused the game during the delay!
+                if (!isPaused) {
+                    canFlip = true;
+                }
             });
             delay.setRepeats(false);
             delay.start();
@@ -361,10 +489,10 @@ public class GamePanel extends BasePanel {
             : "Time's Up!\nFinal Score: " + player.getScore();
 
         int choice = JOptionPane.showConfirmDialog(
-                panel, msg + "\n\nPlay again?", "Game Over",
+                this, msg + "\n\nPlay again?", "Game Over",
                 JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 
         if (choice == JOptionPane.YES_OPTION) restartGame();
-        else { onExit(); cardLayout.show(container, "START"); }
+        else { onExit(); cardLayout.show(GameWindow.container, "START"); }
     }
 }

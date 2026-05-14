@@ -20,8 +20,8 @@ import javax.swing.*;
 public class GameWindow {
 
     private final JFrame     frame;
-    private final CardLayout cardLayout;
-    private final JPanel     container;
+    private final CardLayout cardLayout = new CardLayout();
+    public static JPanel  container;
 
     private final BasePanel startPanel;
     private final GamePanel gamePanel;   // kept typed so we can call restartGame()
@@ -31,20 +31,19 @@ public class GameWindow {
 
     public GameWindow() {
         frame     = new JFrame("Blink Match Memory");
-        cardLayout = new CardLayout();
         container  = new JPanel(cardLayout);
 
         // build panels
-        startPanel = new StartPanel(cardLayout, container);
-        gamePanel  = new GamePanel(cardLayout, container);
-        helpPanel  = new HelpPanel(cardLayout, container);
+        startPanel = new StartPanel(cardLayout);
+        gamePanel  = new GamePanel(cardLayout);
+        helpPanel  = new HelpPanel(cardLayout);
 
-        container.add(startPanel.getPanel(), "START");
-        container.add(gamePanel.getPanel(),  "GAME");
-        container.add(helpPanel.getPanel(),  "HELP");
+        container.add(startPanel, "START");
+        container.add(gamePanel,  "GAME");
+        container.add(helpPanel,  "HELP");
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(520, 560);
+        frame.setSize(650, 750);
         frame.setMinimumSize(new Dimension(460, 500));
         frame.setLocationRelativeTo(null);
         frame.add(container);
@@ -55,7 +54,10 @@ public class GameWindow {
         currentPanel.onEnter();
     }
 
-    public void show() { frame.setVisible(true); }
+
+    public void show() { 
+        frame.setVisible(true); 
+    }
 
     /**
      * Transitions to a named screen, honouring the lifecycle contract.

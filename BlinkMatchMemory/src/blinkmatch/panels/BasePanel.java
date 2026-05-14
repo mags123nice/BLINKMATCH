@@ -11,9 +11,26 @@ import javax.swing.*;
  * INHERITANCE:  all three concrete panels extend this class and inherit
  *               the shared styling helpers.
  */
-public abstract class BasePanel {
+public abstract class BasePanel extends JPanel {
 
-    protected JPanel panel;
+    protected CardLayout cardLayout;
+    
+    protected Cursor customHoverCursor;
+
+    public BasePanel(CardLayout cardLayout)
+    {
+        this.cardLayout = cardLayout;
+
+    
+        Image cursorImage = new ImageIcon("src/resources/images/cursorIcon.png").getImage();
+        Point hotspot = new java.awt.Point(0, 0); 
+        Cursor customCursor = java.awt.Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, hotspot, "Custom Cursor");
+        this.setCursor(customCursor);
+
+        // --- 2. Build the Hover Cursor ONCE here ---
+        Image hoverImg = new ImageIcon("src/resources/images/hoverIcon.png").getImage();
+        customHoverCursor = java.awt.Toolkit.getDefaultToolkit().createCustomCursor(hoverImg, hotspot, "Hover Cursor");
+    }
 
     // ---------- abstract lifecycle ----------
 
@@ -29,32 +46,39 @@ public abstract class BasePanel {
     // ---------- shared access ----------
 
     /** Returns the underlying JPanel so GameWindow can add it to CardLayout. */
-    public JPanel getPanel() { return panel; }
 
     // ---------- shared styling helpers (inherited by all panels) ----------
 
-    protected JButton makeButton(ImageIcon icon) {
+    protected JButton makeButtonGame (ImageIcon icon) {
+        //buttons for gamepanel
         JButton btn = new JButton(icon);
-        // btn.setFont(new Font("SansSerif", Font.BOLD, 14));
-        btn.setPreferredSize(new Dimension(150, 100));
         
-        if (btn.getWidth() > 0 && btn.getHeight() > 0) {
-                    Image scaledImage = icon.getImage().getScaledInstance(
-                        btn.getWidth(), 
-                        btn.getHeight(), 
-                        Image.SCALE_SMOOTH
-                    );
-                    btn.setIcon(new ImageIcon(scaledImage));
-        }
-        // btn.setBackground(new Color(173, 216, 230));
-        // btn.setFocusPainted(false);
-        // btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        // btn.setBorder(BorderFactory.createCompoundBorder(
-        //         BorderFactory.createLineBorder(new Color(100, 149, 237), 1),
-        //         BorderFactory.createEmptyBorder(6, 18, 6, 18)
-        // ));
-        return btn;
+
+        return btn; 
     }
+
+    protected JButton makeButton(ImageIcon icon, int xSize, int ySize) {
+    JButton btn = new JButton(icon);
+    
+    // Set both sizes to guide the Layout Manager
+    Dimension size = new Dimension(xSize, ySize);
+    btn.setPreferredSize(size);
+    btn.setMinimumSize(size); 
+    
+    if (xSize > 0 && ySize > 0) {
+        Image scaledImage = icon.getImage().getScaledInstance(
+            xSize, ySize, Image.SCALE_SMOOTH
+        );
+        btn.setIcon(new ImageIcon(scaledImage));
+    }
+
+    btn.setBorder(null);
+    btn.setContentAreaFilled(false); // Important: hides the grey background
+
+    btn.setCursor(customHoverCursor);
+    
+    return btn;
+}
 
     protected JLabel makeTitle(String text) {
         JLabel lbl = new JLabel(text, SwingConstants.CENTER);
