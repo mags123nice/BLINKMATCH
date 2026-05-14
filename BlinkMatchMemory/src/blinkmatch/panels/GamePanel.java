@@ -484,9 +484,32 @@ public class GamePanel extends BasePanel {
     }
 
     private void showGameOver(boolean won) {
-        String msg = won
-            ? "You Win!\nScore: " + player.getScore() + "  |  Moves: " + player.getMoves()
-            : "Time's Up!\nFinal Score: " + player.getScore();
+        String msg;
+        
+        if (won) {
+            int timeBonus = gameState.getTimeRemaining() * 10;
+            player.addScore(timeBonus);
+            
+            // --- HIGH SCORE LOGIC ---
+            boolean isNewHighScore = false;
+            if (player.getScore() > GameWindow.highScore) {
+                GameWindow.highScore = player.getScore();
+                isNewHighScore = true;
+            }
+            
+            msg = "You Win!\n"
+                + "Time Bonus: +" + timeBonus + "\n"
+                + "Final Score: " + player.getScore() + "\n"
+                + "Moves: " + player.getMoves();
+                
+            // Add a fun message if they broke the record!
+            if (isNewHighScore) {
+                msg += "\n\n🏆 NEW HIGH SCORE! 🏆";
+            }
+            
+        } else {
+            msg = "Time's Up!\nFinal Score: " + player.getScore();
+        }
 
         int choice = JOptionPane.showConfirmDialog(
                 this, msg + "\n\nPlay again?", "Game Over",
