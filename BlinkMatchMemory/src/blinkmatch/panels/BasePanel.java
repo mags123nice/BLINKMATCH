@@ -1,16 +1,19 @@
 package blinkmatch.panels;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
-/**
- * Abstract base for every game screen (Start, Game, Help).
- *
- * ABSTRACTION:  declares the lifecycle contract without knowing what each
- *               screen will show.
- * INHERITANCE:  all three concrete panels extend this class and inherit
- *               the shared styling helpers.
- */
 public abstract class BasePanel extends JPanel {
 
     protected CardLayout cardLayout;
@@ -21,33 +24,26 @@ public abstract class BasePanel extends JPanel {
     {
         this.cardLayout = cardLayout;
 
-    
+    //Create Cursors
                 Image cursorImage = new ImageIcon("src/resources/images/cursorIcon.png").getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-        Point hotspot = new java.awt.Point(0, 0); 
-        Cursor customCursor = java.awt.Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, hotspot, "Custom Cursor");
+        Point hotspot = new Point(0, 0); 
+        Cursor customCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, hotspot, "Custom Cursor");
         this.setCursor(customCursor);
 
-        // --- 2. Build the Hover Cursor ONCE here ---
+
          Image hoverImg = new ImageIcon("src/resources/images/hoverIcon.png").getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-        customHoverCursor = java.awt.Toolkit.getDefaultToolkit().createCustomCursor(hoverImg, hotspot, "Hover Cursor");
+        customHoverCursor = Toolkit.getDefaultToolkit().createCustomCursor(hoverImg, hotspot, "Hover Cursor");
     }
 
-    // ---------- abstract lifecycle ----------
 
-    /** Build all Swing components for this screen. */
+    
     public abstract void initComponents();
-
-    /** Called by GameWindow right before this panel becomes visible. */
     public abstract void onEnter();
-
-    /** Called by GameWindow right before this panel is hidden. */
     public abstract void onExit();
 
-    // ---------- shared access ----------
+    
 
-    /** Returns the underlying JPanel so GameWindow can add it to CardLayout. */
-
-    // ---------- shared styling helpers (inherited by all panels) ----------
+    // ---------- Shared Styling Helpers ----------
 
     protected JButton makeButtonGame (ImageIcon icon) {
         //buttons for gamepanel
@@ -60,7 +56,7 @@ public abstract class BasePanel extends JPanel {
     protected JButton makeButton(ImageIcon icon, int xSize, int ySize) {
         JButton btn = new JButton(icon);
         
-        // Set both sizes to guide the Layout Manager
+        // Set Sizes
         Dimension size = new Dimension(xSize, ySize);
         btn.setPreferredSize(size);
         btn.setMaximumSize(size); 
@@ -74,7 +70,7 @@ public abstract class BasePanel extends JPanel {
         }
 
         btn.setBorder(null);
-        btn.setContentAreaFilled(false); // Important: hides the grey background
+        btn.setContentAreaFilled(false); 
 
         btn.setCursor(customHoverCursor);
         

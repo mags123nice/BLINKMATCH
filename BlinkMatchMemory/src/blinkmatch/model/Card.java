@@ -2,9 +2,6 @@ package blinkmatch.model;
 
 import javax.swing.ImageIcon;
 
-// Represents a single card on the game board.
-// ENCAPSULATION: all fields are private, accessed only via getters/setters.
-
 public class Card {
 
     private final int id;

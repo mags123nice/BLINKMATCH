@@ -1,7 +1,6 @@
 package blinkmatch.model;
 
-// Holds all player-related data.
-// ENCAPSULATION: score and moves can only be changed through controlled methods.
+
 
 public class Player {
 
