@@ -44,13 +44,13 @@ public class StartPanel extends BasePanel{
 
         setBorder(BorderFactory.createEmptyBorder(600, 60, 0, 60));
         bg = new ImageIcon(
-                        "src/resources/gifs/landscape.gif"
+                        "resources/gifs/landscape.gif"
                 ).getImage();
 
         //button imageicon
-        ImageIcon startIcon = new ImageIcon("src/resources/images/startIcon.png");
-        ImageIcon helpIcon = new ImageIcon("src/resources/images/helpIcon.png");
-        ImageIcon quitIcon = new ImageIcon("src/resources/images/exitIcon.png");
+        ImageIcon startIcon = new ImageIcon("resources/images/startIcon.png");
+        ImageIcon helpIcon = new ImageIcon("resources/images/helpIcon.png");
+        ImageIcon quitIcon = new ImageIcon("resources/images/exitIcon.png");
         
 
         // --- title ---
@@ -63,8 +63,8 @@ public class StartPanel extends BasePanel{
         // --- buttons ---
         int smolSizeX = 250;
         int smolSizeY = 100;
-        int beegSizX = 425;
-        int beegSizY = 375;
+        // int beegSizX = 425;
+        // int beegSizY = 375;
 
         JButton startBtn =  makeButton(startIcon, smolSizeX, smolSizeY);
         JButton quitButton =  makeButton(quitIcon,  smolSizeX, smolSizeY);

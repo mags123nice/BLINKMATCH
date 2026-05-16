@@ -13,7 +13,7 @@ public class SoundPlayer {
         try {         
             Clip sound;
             AudioInputStream audio = AudioSystem.getAudioInputStream(
-                    new File("src/resources/music/clickEffect.wav"));
+                    new File("resources/music/clickEffect.wav"));
             sound = AudioSystem.getClip();
             
             sound.open(audio);

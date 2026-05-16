@@ -36,7 +36,7 @@ public class HelpPanel extends BasePanel implements Runnable {
         setBackground(bgColor());
         setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        helpImg = new ImageIcon("src/resources/gifs/helpPage.gif").getImage();
+        helpImg = new ImageIcon("resources/gifs/helpPage.gif").getImage();
 
         Thread start = new Thread(this);
         start.start();
@@ -46,7 +46,7 @@ public class HelpPanel extends BasePanel implements Runnable {
         content.setBackground(bgColor());
 
         //imageIcons
-        ImageIcon backIcon = new ImageIcon("src/resources/images/backIcon.png");
+        ImageIcon backIcon = new ImageIcon("resources/images/backIcon.png");
 
         //MAKE ICONIMAGE
         JButton backBtn = makeButton(backIcon, 150, 75);

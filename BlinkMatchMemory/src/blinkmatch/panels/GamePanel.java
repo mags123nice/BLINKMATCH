@@ -40,19 +40,16 @@ import java.awt.event.ComponentAdapter;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
+// import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-<<<<<<< HEAD
-=======
-import javax.swing.JOptionPane;
+// import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
->>>>>>> 67f3d9617900d2edca43dc2219fb6daee1f96599
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+// import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -91,18 +88,18 @@ public class GamePanel extends BasePanel {
     private JTextPane gameOverStats;
     
 
-    private ImageIcon pausePicture = new ImageIcon("src/resources/images/pauseIcon3.png");
+    private ImageIcon pausePicture = new ImageIcon("resources/images/pauseIcon3.png");
 
     // Constants 
     private static final ImageIcon[] SYMBOLS = {
-        new ImageIcon("src/resources/images/Apple.png"),// 🍎
-        new ImageIcon("src/resources/images/Banana.png"), // 🍌
-        new ImageIcon("src/resources/images/Grapes.png"), // 🍇
-        new ImageIcon("src/resources/images/StrawBerry.png"), // 🍓
-        new ImageIcon("src/resources/images/Orange.png"), // 🍊
-        new ImageIcon("src/resources/images/Lemon.png"), // 🍋
-        new ImageIcon("src/resources/images/WaterMelon.png"), // 🍉
-        new ImageIcon("src/resources/images/Peach.png"),  // 🍑
+        new ImageIcon("resources/images/Apple.png"),// 🍎
+        new ImageIcon("resources/images/Banana.png"), // 🍌
+        new ImageIcon("resources/images/Grapes.png"), // 🍇
+        new ImageIcon("resources/images/StrawBerry.png"), // 🍓
+        new ImageIcon("resources/images/Orange.png"), // 🍊
+        new ImageIcon("resources/images/Lemon.png"), // 🍋
+        new ImageIcon("resources/images/WaterMelon.png"), // 🍉
+        new ImageIcon("resources/images/Peach.png"),  // 🍑
     };
     
     private static final int TOTAL_PAIRS = 8;
@@ -114,12 +111,12 @@ public class GamePanel extends BasePanel {
     private final Random rand = new Random();  
 
     // CARDS 
-    private static final String PATH_CARD_BACK = "src/resources/images/cardback.png";
-    private static final String PATH_STORM_BACK = "src/resources/images/stormIcon.png";
+    private static final String PATH_CARD_BACK = "resources/images/cardback.png";
+    private static final String PATH_STORM_BACK = "resources/images/stormIcon.png";
     private static final Color SUNNY_ORANGE = new Color(255, 170, 50);
     private static final Color STORMY_BLUE   = new Color(44, 62, 80);
 
-    private static final Color COLOR_FACE_UP    = Color.WHITE;
+    private static final Color COLOR_FACE_UP    = Color.BLACK;
     private static final Color COLOR_MATCHED    = new Color(144, 238, 144);
 
     //
@@ -175,7 +172,7 @@ public class GamePanel extends BasePanel {
         try {         
             Clip sound;
             AudioInputStream audio = AudioSystem.getAudioInputStream(
-                    new File("src/resources/music/itty.wav"));
+                    new File("resources/music/itty.wav"));
             sound = AudioSystem.getClip();
             
             sound.open(audio);
@@ -239,6 +236,8 @@ public class GamePanel extends BasePanel {
         
             btn.setOpaque(true);
             btn.setBorderPainted(true);
+            btn.setContentAreaFilled(true);
+            btn.setBackground(SUNNY_ORANGE);
             btn.setFocusPainted(false);
             btn.setCursor(customHoverCursor);
 
@@ -259,11 +258,11 @@ public class GamePanel extends BasePanel {
 
 
 
-        ImageIcon pauseIcon = new ImageIcon("src/resources/images/pauseIcon3.png");        
+        ImageIcon pauseIcon = new ImageIcon("resources/images/pauseIcon3.png");        
         pauseBtn = makeButton(pauseIcon, 150, 100);
 
         pauseBtn.addActionListener(e -> {
-            ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon2.png");
+            ImageIcon psBtn3  =  new ImageIcon("resources/images/pauseIcon2.png");
             Dimension pauseButtonDimenstion = pauseBtn.getPreferredSize();
             pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance((int)pauseButtonDimenstion.getWidth(),(int)pauseButtonDimenstion.getHeight(), Image.SCALE_SMOOTH));
             pauseBtn.setIcon(pausePicture);
@@ -284,14 +283,10 @@ public class GamePanel extends BasePanel {
             {
 
                 super.paintComponent(g);
-                int  width = 1550;
+                int panelWidth = getWidth();
+            int panelHeight = getHeight();
                 g.drawImage(
-                    new ImageIcon("src/resources/images/PauseImage.png").getImage(),
-                    0,
-                    0,
-                    width,
-                    880,
-                    null);
+                    new ImageIcon("resources/images/PauseImage.png").getImage(),0,0,panelWidth, panelHeight,null);
             }
         }; 
 
@@ -312,9 +307,9 @@ public class GamePanel extends BasePanel {
         overlay.setOpaque(false);
 
         //Icons in Pause
-        ImageIcon resumeIcon = new ImageIcon("src/resources/images/resumeIcon.png");
-        ImageIcon restartIcon = new ImageIcon("src/resources/images/restartIcon.png");
-        ImageIcon exitIcon = new ImageIcon("src/resources/images/quitIcon.png");
+        ImageIcon resumeIcon = new ImageIcon("resources/images/resumeIcon.png");
+        ImageIcon restartIcon = new ImageIcon("resources/images/restartIcon.png");
+        ImageIcon exitIcon = new ImageIcon("resources/images/quitIcon.png");
         
         int buttonX = 180;
         int buttonY = 80;
@@ -417,7 +412,7 @@ public class GamePanel extends BasePanel {
         isPaused = true;
         
         
-        ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon2.png");
+        ImageIcon psBtn3  =  new ImageIcon("resources/images/pauseIcon2.png");
         
         pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(150,100, Image.SCALE_SMOOTH));
         pauseBtn.setIcon(pausePicture);
@@ -435,7 +430,7 @@ public class GamePanel extends BasePanel {
         canFlip = true;
         isPaused = false;
         
-        ImageIcon psBtn3  =  new ImageIcon("src/resources/images/pauseIcon3.png");
+        ImageIcon psBtn3  =  new ImageIcon("resources/images/pauseIcon3.png");
         
         pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(150,100, Image.SCALE_SMOOTH));
         pauseBtn.setIcon(pausePicture);
@@ -639,7 +634,7 @@ public class GamePanel extends BasePanel {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.drawImage(
-                    new ImageIcon("src/resources/images/gOverScreen.png").getImage(),
+                    new ImageIcon("esources/images/woodenBoard_Final.png").getImage(),
                     0, 0, getWidth(), getHeight(), null
                 );
             }
@@ -658,7 +653,7 @@ public class GamePanel extends BasePanel {
         // ── TITLE ──
         gameOverTitle = new JLabel("", SwingConstants.CENTER);
         gameOverTitle.setFont(new Font("SansSerif", Font.BOLD, 200));
-        gameOverTitle.setForeground(Color.WHITE);
+        gameOverTitle.setForeground(Color.BLACK);
 
         // ── STATS ──
         gameOverStats = new JTextPane();
@@ -666,14 +661,14 @@ public class GamePanel extends BasePanel {
         gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 100));
         
         gameOverStats.setOpaque(false);
-        gameOverStats.setForeground(Color.WHITE);
+        gameOverStats.setForeground(Color.BLACK);
 
         SimpleAttributeSet center = new SimpleAttributeSet();
         gameOverStats.setParagraphAttributes(center, false);
 
         // ── BUTTONS ──
-        ImageIcon restartIcon = new ImageIcon("src/resources/images/restartIcon.png");
-        ImageIcon exitIcon = new ImageIcon("src/resources/images/quitIcon.png");
+        ImageIcon restartIcon = new ImageIcon("resources/images/restartIcon.png");
+        ImageIcon exitIcon = new ImageIcon("resources/images/quitIcon.png");
 
         JButton restartBtn = makeButton(restartIcon,170, 70);
         JButton exitBtn = makeButton(exitIcon, 170, 70);
@@ -762,7 +757,7 @@ public class GamePanel extends BasePanel {
 
         // TEXT AREA styling directly here (no shared style vars)
         gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 35));
-        gameOverStats.setForeground(Color.WHITE);
+        gameOverStats.setForeground(Color.BLACK);
         gameOverStats.setText(msg);
     }
 

@@ -25,13 +25,13 @@ public abstract class BasePanel extends JPanel {
         this.cardLayout = cardLayout;
 
     //Create Cursors
-                Image cursorImage = new ImageIcon("src/resources/images/cursorIcon.png").getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+                Image cursorImage = new ImageIcon("resources/images/cursorIcon.png").getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
         Point hotspot = new Point(0, 0); 
         Cursor customCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, hotspot, "Custom Cursor");
         this.setCursor(customCursor);
 
 
-         Image hoverImg = new ImageIcon("src/resources/images/hoverIcon.png").getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+         Image hoverImg = new ImageIcon("resources/images/hoverIcon.png").getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
         customHoverCursor = Toolkit.getDefaultToolkit().createCustomCursor(hoverImg, hotspot, "Hover Cursor");
     }
 

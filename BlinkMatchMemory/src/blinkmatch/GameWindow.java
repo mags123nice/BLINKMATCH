@@ -14,9 +14,9 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 import java.io.IOException;
 
-public class GameWindow {
+public class GameWindow extends JFrame{
 
-    private final JFrame     frame;
+
     private final CardLayout cardLayout = new CardLayout();
     public static JPanel  container;
     public static int highScore = 0;
@@ -28,12 +28,15 @@ public class GameWindow {
     private BasePanel currentPanel;
 
     public GameWindow() {
-        loadHighScore(); // Read the file before doing anything else
-    
-        frame     = new JFrame("Blink Match Memory");
-        frame.setResizable(false);
-
+        loadHighScore(); 
+        super("Blink Match Memory");
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setUndecorated(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        
         container  = new JPanel(cardLayout);
+        add(container);
         
         //Builds Panels
         startPanel = new StartPanel(cardLayout);
@@ -44,11 +47,7 @@ public class GameWindow {
         container.add(gamePanel,  "GAME");
         container.add(helpPanel,  "HELP");
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setUndecorated(true);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setLocationRelativeTo(null);
-        frame.add(container);
+        
 
         currentPanel = startPanel;
         cardLayout.show(container, "START");
@@ -56,9 +55,7 @@ public class GameWindow {
     }
 
 
-    public void show() { 
-        frame.setVisible(true); 
-    }
+   
 
     public void showPanel(String name) {
         currentPanel.onExit();
