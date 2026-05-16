@@ -40,18 +40,21 @@ import java.awt.event.ComponentAdapter;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+import javax.swing.JTextPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.SimpleAttributeSet;
 
 public class GamePanel extends BasePanel {
 
@@ -82,7 +85,8 @@ public class GamePanel extends BasePanel {
     private boolean canFlip = true;
     private boolean stormTriggered = false;
         private JLabel gameOverTitle;
-    private JTextArea gameOverStats;
+    private JTextPane gameOverStats;
+    
 
     private ImageIcon pausePicture = new ImageIcon("src/resources/images/pauseIcon3.png");
 
@@ -100,7 +104,7 @@ public class GamePanel extends BasePanel {
     
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
-    private static final int GAME_TIME   = 60;
+    private static final int GAME_TIME   = 30;
     private static final int STORM_MAX = 45; 
     private static final int STORM_MIN = 15;
     private int randomStormTime; 
@@ -262,7 +266,7 @@ public class GamePanel extends BasePanel {
             pauseBtn.setIcon(pausePicture);
             pauseBtn.repaint();
 
-            pauseGame();
+         pauseGame();
             pauseOverlay.repaint();
         });
 
@@ -315,15 +319,13 @@ public class GamePanel extends BasePanel {
         JButton resumeBtn = makeButton(resumeIcon, buttonX, buttonY);
         JButton restartBtn = makeButton(restartIcon, buttonX, buttonY);
         JButton quitBtn    = makeButton(exitIcon, buttonX, buttonY);
-        
-        
+         
         for (JButton btn : new JButton[]{resumeBtn, restartBtn, quitBtn}) {
             btn.setFont(new Font("SansSerif", Font.BOLD, 18));
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
             btn.setFocusPainted(false);
             btn.setMaximumSize(new Dimension(buttonX, buttonY));
         }
-
 
         resumeBtn.addActionListener(e -> resumeGame());
         
@@ -335,6 +337,7 @@ public class GamePanel extends BasePanel {
         quitBtn.addActionListener(e -> {
             resumeGame();
             onExit();
+            overlay.setVisible(false);
             cardLayout.show(GameWindow.container, "START");
         });
 
@@ -564,7 +567,8 @@ public class GamePanel extends BasePanel {
         }
     }
 
-    private void checkMatch() { //Checks if the next two cards flipped are the same
+    private void checkMatch() 
+    { //Checks if the next two cards flipped are the same
         int i1 = flippedIndices.get(0);
         int i2 = flippedIndices.get(1);
 
@@ -609,12 +613,12 @@ public class GamePanel extends BasePanel {
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
-private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps reset Button Visual after certain triggers
-    cardButtons[idx].setText("");
-    cardButtons[idx].setIcon(icon);
-    cardButtons[idx].setBackground(bgColor); 
-    cardButtons[idx].setEnabled(true);
-}
+    private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps reset Button Visual after certain triggers
+        cardButtons[idx].setText("");
+        cardButtons[idx].setIcon(icon);
+        cardButtons[idx].setBackground(bgColor); 
+        cardButtons[idx].setEnabled(true);
+    }
     private void refreshHUD() { 
         timerLabel.setText("Timer: "   + gameState.getTimeRemaining());
         scoreLabel.setText("Score: "   + player.getScore());
@@ -636,34 +640,38 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
             }
         };
 
-        overlay.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        overlay.setBorder(BorderFactory.createEmptyBorder(125, 0, 0, 10));
         overlay.setLayout(new GridBagLayout());
         overlay.setOpaque(false);
         overlay.setVisible(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.insets = new Insets(10, 20, 10, 20);
+        gbc.insets = new Insets(0, 0, 0, 0);
         gbc.anchor = GridBagConstraints.CENTER;
 
         // ── TITLE ──
         gameOverTitle = new JLabel("", SwingConstants.CENTER);
-        gameOverTitle.setFont(new Font("SansSerif", Font.BOLD, 100));
+        gameOverTitle.setFont(new Font("SansSerif", Font.BOLD, 200));
         gameOverTitle.setForeground(Color.WHITE);
 
         // ── STATS ──
-        gameOverStats = new JTextArea(6, 20);
+        gameOverStats = new JTextPane();
         gameOverStats.setEditable(false);
         gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 100));
+        
         gameOverStats.setOpaque(false);
         gameOverStats.setForeground(Color.WHITE);
+
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        gameOverStats.setParagraphAttributes(center, false);
 
         // ── BUTTONS ──
         ImageIcon restartIcon = new ImageIcon("src/resources/images/restartIcon.png");
         ImageIcon exitIcon = new ImageIcon("src/resources/images/quitIcon.png");
 
-        JButton restartBtn = makeButton(restartIcon, 180, 80);
-        JButton exitBtn = makeButton(exitIcon, 180, 80);
+        JButton restartBtn = makeButton(restartIcon,170, 70);
+        JButton exitBtn = makeButton(exitIcon, 170, 70);
 
         restartBtn.addActionListener(e -> {
             hideGameOver();
@@ -671,8 +679,9 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
         });
 
         exitBtn.addActionListener(e -> {
-            hideGameOver();
+            resumeGame();
             onExit();
+            overlay.setVisible(false);
             cardLayout.show(GameWindow.container, "START");
         });
 
@@ -683,11 +692,22 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
         gbc.gridy = 1;
         overlay.add(gameOverStats, gbc);
 
+        
         gbc.gridy = 2;
-        overlay.add(restartBtn, gbc);
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 0));
 
-        gbc.gridy = 3;
-        overlay.add(exitBtn, gbc);
+
+        panel.add(restartBtn);
+        panel.add(exitBtn);
+        
+
+
+
+        panel.setBackground(new Color(0, 0, 0, 0));
+        overlay.add(panel, gbc);
+        //overlay.add(Box.createVerticalStrut(75), gbc);
+        
+        // gbc.gridy = 3;
 
         return overlay;
     }
@@ -706,6 +726,8 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
         canFlip = false;
         isPaused = true;
 
+        
+
         if (gameOverOverlay == null) return;
 
         gameOverOverlay.setVisible(true);
@@ -713,7 +735,7 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
         gameOverOverlay.repaint();
         gameOverOverlay.requestFocusInWindow();
 
-        gameOverTitle.setFont(new Font("Monospaced", Font.BOLD, won ? 34 : 30));
+        gameOverTitle.setFont(new Font("Monospaced", Font.BOLD, won ? 37 : 37));
 
         if (won) {
             gameOverTitle.setForeground(new Color(0, 220, 0)); // GREEN WIN
@@ -735,12 +757,12 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
                 "\nTime Left: " + gameState.getTimeRemaining();
 
         if (isNewHighScore) {
-            msg += "\n\n🏆 NEW HIGH SCORE! 🏆";
+            msg += "\nNEW HIGH SCORE!";
             
         }
 
         // TEXT AREA styling directly here (no shared style vars)
-        gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 40));
+        gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 35));
         gameOverStats.setForeground(Color.WHITE);
         gameOverStats.setText(msg);
     }
@@ -761,6 +783,4 @@ private void resetButtonVisual(int idx, ImageIcon icon, Color bgColor) { //Helps
         Image scaled = raw.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }
-
-
 }
