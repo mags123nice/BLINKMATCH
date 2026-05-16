@@ -42,7 +42,7 @@ public class StartPanel extends BasePanel{
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         setBackground(bgColor());
 
-        setBorder(BorderFactory.createEmptyBorder(450, 60, 0, 60));
+        setBorder(BorderFactory.createEmptyBorder(600, 60, 0, 60));
         bg = new ImageIcon(
                         "src/resources/gifs/landscape.gif"
                 ).getImage();
@@ -66,7 +66,7 @@ public class StartPanel extends BasePanel{
         int beegSizX = 425;
         int beegSizY = 375;
 
-        JButton startBtn =  makeButton(startIcon, beegSizX, beegSizY);
+        JButton startBtn =  makeButton(startIcon, smolSizeX, smolSizeY);
         JButton quitButton =  makeButton(quitIcon,  smolSizeX, smolSizeY);
         JButton helpBtn  = makeButton(helpIcon,  smolSizeX, smolSizeY);
 
@@ -108,6 +108,8 @@ public class StartPanel extends BasePanel{
         add(quitButton);
         
         add(Box.createHorizontalGlue());
+
+        
 
         repaint();
     }

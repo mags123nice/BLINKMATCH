@@ -33,7 +33,6 @@ public class GameWindow {
         frame     = new JFrame("Blink Match Memory");
         frame.setResizable(false);
 
-
         container  = new JPanel(cardLayout);
         
         //Builds Panels

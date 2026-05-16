@@ -14,7 +14,7 @@ public class Player {
         this.moves = 0;
     }
 
-    //getters
+    // getters
     public String getName()  { 
         return name; 
     }
