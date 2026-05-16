@@ -58,7 +58,7 @@ import javax.swing.text.SimpleAttributeSet;
 
 public class GamePanel extends BasePanel {
 
-    // ── Game data (encapsulated model objects) ───────────────────────────────
+    //Game data 
     private Player    player;
     private GameState gameState;
     private Card[]    cards;
@@ -66,20 +66,20 @@ public class GamePanel extends BasePanel {
 
     private Weather currentWeather;
 
-    // ── Swing components ─────────────────────────────────────────────────────
+    //Swing components
     private JLabel   timerLabel, weatherLabel, scoreLabel;
     private JPanel   gridPanel;
     private JButton[] cardButtons;
     private Timer delay;
     
-    // ── Pause Menu Components ─────────────────────────────
+    //Pause Menu Components 
     private JPanel pauseOverlay;
     private boolean isPaused = false;
 
     //for gameover
     private JPanel gameOverOverlay;
 
-    // ── Game loop ────────────────────────────────────────────────────────────
+    //Game loop 
     private Timer countdownTimer;
     private final List<Integer> flippedIndices = new ArrayList<>();
     private boolean canFlip = true;
@@ -90,7 +90,7 @@ public class GamePanel extends BasePanel {
 
     private ImageIcon pausePicture = new ImageIcon("src/resources/images/pauseIcon3.png");
 
-    // ── Constants ────────────────────────────────────────────────────────────
+    // Constants 
     private static final ImageIcon[] SYMBOLS = {
         new ImageIcon("src/resources/images/Apple.png"),// 🍎
         new ImageIcon("src/resources/images/Banana.png"), // 🍌
@@ -104,13 +104,13 @@ public class GamePanel extends BasePanel {
     
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
-    private static final int GAME_TIME   = 30;
+    private static final int GAME_TIME   = 60;
     private static final int STORM_MAX = 45; 
     private static final int STORM_MIN = 15;
     private int randomStormTime; 
     private final Random rand = new Random();  
 
-    // ── CARDS ───────────────────────────────────────────────────────────────
+    // CARDS 
     private static final String PATH_CARD_BACK = "src/resources/images/cardback.png";
     private static final String PATH_STORM_BACK = "src/resources/images/stormIcon.png";
     private static final Color SUNNY_ORANGE = new Color(255, 170, 50);
@@ -119,7 +119,7 @@ public class GamePanel extends BasePanel {
     private static final Color COLOR_FACE_UP    = Color.WHITE;
     private static final Color COLOR_MATCHED    = new Color(144, 238, 144);
 
-    // ════════════════════════════════════════════════════════════════════════
+    //
     public GamePanel(CardLayout cardLayout) {
         super(cardLayout);
         
@@ -577,8 +577,10 @@ public class GamePanel extends BasePanel {
         if (isMatch) {
             cards[i1].setMatched(true);
             cards[i2].setMatched(true);
+
             cardButtons[i1].setBackground(COLOR_MATCHED);
             cardButtons[i2].setBackground(COLOR_MATCHED);
+            
             cardButtons[i1].setEnabled(false);
             cardButtons[i2].setEnabled(false);
 
@@ -726,7 +728,7 @@ public class GamePanel extends BasePanel {
         canFlip = false;
         isPaused = true;
 
-        
+        player.addScore(gameState.getTimeRemaining()*10);
 
         if (gameOverOverlay == null) return;
 
