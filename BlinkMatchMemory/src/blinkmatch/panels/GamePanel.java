@@ -104,7 +104,7 @@ public class GamePanel extends BasePanel {
     
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
-    private static final int GAME_TIME   = 60;
+    private static final int GAME_TIME   = 1;
     private static final int STORM_MAX = 45; 
     private static final int STORM_MIN = 15;
     private int randomStormTime; 
@@ -125,6 +125,7 @@ public class GamePanel extends BasePanel {
         
         this.player     = new Player("Player 1");
         this.gameState  = new GameState(GAME_TIME, TOTAL_PAIRS);
+
         initComponents();
     }
 
@@ -197,6 +198,8 @@ public class GamePanel extends BasePanel {
                 stopTimer();
             }
         });
+
+        repaint();
     }
 
     @Override
@@ -226,7 +229,20 @@ public class GamePanel extends BasePanel {
     }
 
     private JPanel buildGrid() {
-        gridPanel = new JPanel(new GridLayout(4, 4, 8, 8));
+        gridPanel = new JPanel(new GridLayout(4, 4, 8, 8))
+        {
+            @Override
+            public void paintComponent(Graphics g)
+            {
+                super.paintComponent(g);
+                g.drawImage(
+                    new ImageIcon("resources/images/areaBackground.jpg").getImage(),
+                    0, 0, getWidth(), getHeight(), null
+                );
+
+            }
+
+        };
         gridPanel.setBackground(bgColor());
         cardButtons = new JButton[GRID_SIZE];
 
@@ -253,7 +269,17 @@ public class GamePanel extends BasePanel {
     }
 
     private JPanel buildButtons() {
-        JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10)){
+
+            @Override
+            public void paintComponent(Graphics g)
+            {
+
+                g.drawImage(
+                        new ImageIcon("resources/images/areaBackground.jpg").getImage(),0,0,getWidth(), getHeight(),null);
+            } 
+
+        };
         south.setBackground(bgColor());
 
 
@@ -284,18 +310,19 @@ public class GamePanel extends BasePanel {
 
                 super.paintComponent(g);
                 int panelWidth = getWidth();
-            int panelHeight = getHeight();
+                int panelHeight = getHeight();
+
                 g.drawImage(
-                    new ImageIcon("resources/images/PauseImage.png").getImage(),0,0,panelWidth, panelHeight,null);
+                        new ImageIcon("resources/images/PauseImage.png").getImage(),0,0,panelWidth, panelHeight,null);
+            
             }
         }; 
 
 
 
         overlay.setBorder(new EmptyBorder(110, 12, 12, 10));
+        // overlay.setBackground(Color.blue);
         overlay.repaint();
-        overlay.setBackground(Color.blue);
-        overlay.setBackground(new Color(0, 0, 0)); 
         overlay.setVisible(false); 
         overlay.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -342,6 +369,9 @@ public class GamePanel extends BasePanel {
         overlay.add(resumeBtn, gbc);
         overlay.add(restartBtn, gbc);        
         overlay.add(quitBtn, gbc);
+
+        overlay.setBackground(new Color(0, 0, 0)); 
+        overlay.repaint();
 
         return overlay;
     }
@@ -652,7 +682,7 @@ public class GamePanel extends BasePanel {
 
         // ── TITLE ──
         gameOverTitle = new JLabel("", SwingConstants.CENTER);
-        gameOverTitle.setFont(new Font("SansSerif", Font.BOLD, 200));
+        gameOverTitle.setFont(new Font("Sans Serif", Font.BOLD, 200));
         gameOverTitle.setForeground(Color.BLACK);
 
         // ── STATS ──
@@ -729,7 +759,7 @@ public class GamePanel extends BasePanel {
         gameOverOverlay.repaint();
         gameOverOverlay.requestFocusInWindow();
 
-        gameOverTitle.setFont(new Font("Monospaced", Font.BOLD, won ? 37 : 37));
+        gameOverTitle.setFont(new Font("Times New Roman", Font.BOLD, won ? 37 : 37));
 
         if (won) {
             gameOverTitle.setForeground(new Color(0, 220, 0)); // GREEN WIN
@@ -776,5 +806,16 @@ public class GamePanel extends BasePanel {
 
         Image scaled = raw.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
+    }
+
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        g.drawImage(
+            new ImageIcon("resources/images/wood_processed.png").getImage(),
+            0, 0, getWidth(), getHeight(), null
+        );
+
     }
 }
