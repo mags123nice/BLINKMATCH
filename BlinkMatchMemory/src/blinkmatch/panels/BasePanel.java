@@ -77,19 +77,19 @@ public abstract class BasePanel extends JPanel {
         return btn;
     }
 
-    protected JLabel makeTitle(String text) {
-        JLabel lbl = new JLabel(text, SwingConstants.CENTER);
-        lbl.setFont(new Font("SansSerif", Font.BOLD, 28));
-        lbl.setForeground(new Color(60, 60, 120));
-        return lbl;
-    }
+    // protected JLabel makeTitle(String text) {
+    //     JLabel lbl = new JLabel(text, SwingConstants.CENTER);
+    //     lbl.setFont(new Font("SansSerif", Font.BOLD, 28));
+    //     lbl.setForeground(new Color(60, 60, 120));
+    //     return lbl;
+    // }
 
-    protected JLabel makeSubtitle(String text) {
-        JLabel lbl = new JLabel(text, SwingConstants.CENTER);
-        lbl.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        lbl.setForeground(new Color(80, 80, 80));
-        return lbl;
-    }
+    // protected JLabel makeSubtitle(String text) {
+    //     JLabel lbl = new JLabel(text, SwingConstants.CENTER);
+    //     lbl.setFont(new Font("SansSerif", Font.PLAIN, 14));
+    //     lbl.setForeground(new Color(80, 80, 80));
+    //     return lbl;
+    // }
 
         protected Color bgColor() { return new Color(220, 245, 230); }
 }

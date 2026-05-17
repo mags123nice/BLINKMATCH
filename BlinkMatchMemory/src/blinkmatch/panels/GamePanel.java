@@ -634,7 +634,7 @@ public class GamePanel extends BasePanel {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.drawImage(
-                    new ImageIcon("esources/images/woodenBoard_Final.png").getImage(),
+                    new ImageIcon("resources/images/wood_processed.png").getImage(),
                     0, 0, getWidth(), getHeight(), null
                 );
             }

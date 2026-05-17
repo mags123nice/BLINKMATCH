@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -14,8 +15,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
+import java.awt.Font;
 
 public class StartPanel extends BasePanel{
 
@@ -39,10 +42,10 @@ public class StartPanel extends BasePanel{
     @Override
     public  void initComponents() {
         
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(bgColor());
 
-        setBorder(BorderFactory.createEmptyBorder(600, 60, 0, 60));
+        setBorder(BorderFactory.createEmptyBorder(600, 60, 20, 60));
         bg = new ImageIcon(
                         "resources/gifs/landscape.gif"
                 ).getImage();
@@ -54,11 +57,18 @@ public class StartPanel extends BasePanel{
         
 
         // --- title ---
-        JLabel title = makeTitle("Blink Match Memory");
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // JLabel title = makeTitle("Blink Match Memory");
+        // title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel subtitle = makeSubtitle("Match all pairs before the storm hits!");
-        subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // JLabel subtitle = makeSubtitle("Match all pairs before the storm hits!");
+        // subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        GameWindow.loadHighScore();
+        JLabel highScore = new JLabel("Current Highscore: " + GameWindow.highScore + "!" );
+        highScore.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
+        highScore.setForeground(Color.BLACK);
+        
+        highScore.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // --- buttons ---
         int smolSizeX = 250;
@@ -95,19 +105,28 @@ public class StartPanel extends BasePanel{
                 cardLayout.show(GameWindow.container, "GAME");
             }
         });
-        add(Box.createHorizontalGlue());
+        JPanel buttonRow = new JPanel();
+        buttonRow.setLayout(new BoxLayout(buttonRow, BoxLayout.X_AXIS));
+        buttonRow.setOpaque(false);
+        buttonRow.add(Box.createHorizontalGlue());
         
-        add(helpBtn);
+        buttonRow.add(helpBtn);
         
-        add(Box.createHorizontalStrut(30)); 
+        buttonRow.add(Box.createHorizontalStrut(30)); 
         
-        add(startBtn);
+        buttonRow.add(startBtn);
         
-        add(Box.createHorizontalStrut(30)); 
+        buttonRow.add(Box.createHorizontalStrut(30)); 
         
-        add(quitButton);
+        buttonRow.add(quitButton);
         
-        add(Box.createHorizontalGlue());
+        buttonRow.add(Box.createHorizontalGlue());
+
+        add(Box.createVerticalGlue());
+        add(buttonRow);              
+        add(Box.createVerticalStrut(4));
+        add(highScore);
+        add(Box.createVerticalGlue());
 
         
 
