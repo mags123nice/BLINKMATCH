@@ -104,7 +104,7 @@ public class GamePanel extends BasePanel {
     
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
-    private static final int GAME_TIME   = 60;
+    private static final int GAME_TIME   = 1;
     private static final int STORM_MAX = 45; 
     private static final int STORM_MIN = 15;
     private int randomStormTime; 
@@ -125,6 +125,8 @@ public class GamePanel extends BasePanel {
         
         this.player     = new Player("Player 1");
         this.gameState  = new GameState(GAME_TIME, TOTAL_PAIRS);
+        setBackground(new Color(0, 0, 255, 255));
+
         initComponents();
     }
 
@@ -137,7 +139,22 @@ public class GamePanel extends BasePanel {
         JLayeredPane layeredPane = new JLayeredPane();
         
         // Creates Main Content
-        JPanel mainContent = new JPanel(new BorderLayout(8, 8));
+        JPanel mainContent = new JPanel(new BorderLayout(8, 8))
+        {
+            
+            @Override
+            public void paintComponent(Graphics g)
+            {
+                    
+                super.paintComponent(g);
+                g.drawImage(
+                    new ImageIcon("resources/images/areaBackground.jpg").getImage(),
+                    0, 0, getWidth(), getHeight(), null
+                );
+            }
+                
+            
+        };
         mainContent.setBackground(bgColor());
         mainContent.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
         mainContent.add(buildHUD(), BorderLayout.NORTH);
@@ -197,6 +214,8 @@ public class GamePanel extends BasePanel {
                 stopTimer();
             }
         });
+
+        repaint();
     }
 
     @Override
@@ -208,8 +227,11 @@ public class GamePanel extends BasePanel {
     // ── UI builders ─────────────────────────────────────────────────────────
 
     private JPanel buildHUD() {
-        JPanel hud = new JPanel(new GridLayout(1, 3, 4, 0));
-        hud.setBackground(bgColor());
+        JPanel hud = new JPanel(new GridLayout(1, 3, 4, 0))
+        {
+            
+        };
+        hud.setBackground(new Color(0, 0, 0, 0));
         hud.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
 
         Font f = new Font("SansSerif", Font.BOLD, 55);
@@ -226,7 +248,20 @@ public class GamePanel extends BasePanel {
     }
 
     private JPanel buildGrid() {
-        gridPanel = new JPanel(new GridLayout(4, 4, 8, 8));
+        gridPanel = new JPanel(new GridLayout(4, 4, 8, 8))
+        {
+            @Override
+            public void paintComponent(Graphics g)
+            {
+                super.paintComponent(g);
+                g.drawImage(
+                    new ImageIcon("resources/images/areaBackground.jpg").getImage(),
+                    0, 0, getWidth(), getHeight(), null
+                );
+
+            }
+
+        };
         gridPanel.setBackground(bgColor());
         cardButtons = new JButton[GRID_SIZE];
 
@@ -253,10 +288,13 @@ public class GamePanel extends BasePanel {
     }
 
     private JPanel buildButtons() {
-        JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        south.setBackground(bgColor());
+        JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10)){
+
+        };
+        //south.setBackground(bgColor());
 
 
+        
 
         ImageIcon pauseIcon = new ImageIcon("resources/images/pauseIcon3.png");        
         pauseBtn = makeButton(pauseIcon, 150, 100);
@@ -273,6 +311,7 @@ public class GamePanel extends BasePanel {
         });
 
         south.add(pauseBtn);
+        south.setBackground(new Color(0, 0, 0, 0));
         return south;
     }
     
@@ -284,18 +323,19 @@ public class GamePanel extends BasePanel {
 
                 super.paintComponent(g);
                 int panelWidth = getWidth();
-            int panelHeight = getHeight();
+                int panelHeight = getHeight();
+
                 g.drawImage(
-                    new ImageIcon("resources/images/PauseImage.png").getImage(),0,0,panelWidth, panelHeight,null);
+                        new ImageIcon("resources/images/PauseImage.png").getImage(),0,0,panelWidth, panelHeight,null);
+            
             }
         }; 
 
 
 
         overlay.setBorder(new EmptyBorder(110, 12, 12, 10));
+        // overlay.setBackground(Color.blue);
         overlay.repaint();
-        overlay.setBackground(Color.blue);
-        overlay.setBackground(new Color(0, 0, 0)); 
         overlay.setVisible(false); 
         overlay.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -342,6 +382,9 @@ public class GamePanel extends BasePanel {
         overlay.add(resumeBtn, gbc);
         overlay.add(restartBtn, gbc);        
         overlay.add(quitBtn, gbc);
+
+        overlay.setBackground(new Color(0, 0, 0)); 
+        overlay.repaint();
 
         return overlay;
     }
@@ -652,7 +695,7 @@ public class GamePanel extends BasePanel {
 
         // ── TITLE ──
         gameOverTitle = new JLabel("", SwingConstants.CENTER);
-        gameOverTitle.setFont(new Font("SansSerif", Font.BOLD, 200));
+        gameOverTitle.setFont(new Font("Sans Serif", Font.BOLD, 200));
         gameOverTitle.setForeground(Color.BLACK);
 
         // ── STATS ──
@@ -699,11 +742,12 @@ public class GamePanel extends BasePanel {
 
         panel.add(restartBtn);
         panel.add(exitBtn);
+        panel.setBackground(new Color(0, 0, 0, 0));
         
 
 
 
-        panel.setBackground(new Color(0, 0, 0, 0));
+        //panel.setBackground(new Color(0, 0, 0, 0));
         overlay.add(panel, gbc);
         //overlay.add(Box.createVerticalStrut(75), gbc);
         
@@ -777,5 +821,16 @@ public class GamePanel extends BasePanel {
 
         Image scaled = raw.getImage().getScaledInstance(w, h, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
+    }
+
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        g.drawImage(
+            new ImageIcon("resources/images/areaBackground.jpg").getImage(),
+            0, 0, getWidth(), getHeight(), null
+        );
+
     }
 }
