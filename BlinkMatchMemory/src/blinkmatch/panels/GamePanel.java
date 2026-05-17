@@ -113,7 +113,7 @@ public class GamePanel extends BasePanel {
     // CARDS 
     private static final String PATH_CARD_BACK = "resources/images/cardback.png";
     private static final String PATH_STORM_BACK = "resources/images/stormIcon.png";
-    private static final Color SUNNY_ORANGE = new Color(255, 170, 50);
+    private static final Color SUNNY_ORANGE = new Color(255, 150, 50);
     private static final Color STORMY_BLUE   = new Color(44, 62, 80);
 
     private static final Color COLOR_FACE_UP    = Color.BLACK;
@@ -209,10 +209,10 @@ public class GamePanel extends BasePanel {
 
     private JPanel buildHUD() {
         JPanel hud = new JPanel(new GridLayout(1, 3, 4, 0));
-        hud.setBackground(SUNNY_ORANGE);
+        hud.setBackground(bgColor());
         hud.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
 
-        Font f = new Font("SansSerif", Font.BOLD, 14);
+        Font f = new Font("SansSerif", Font.BOLD, 55);
 
         timerLabel   = new JLabel("Timer: " + GAME_TIME, SwingConstants.CENTER);
         weatherLabel = new JLabel("\u2600 Sunny",SwingConstants.CENTER);
@@ -311,8 +311,8 @@ public class GamePanel extends BasePanel {
         ImageIcon restartIcon = new ImageIcon("resources/images/restartIcon.png");
         ImageIcon exitIcon = new ImageIcon("resources/images/quitIcon.png");
         
-        int buttonX = 180;
-        int buttonY = 80;
+        int buttonX = 250;
+        int buttonY = 100;
         
         JButton resumeBtn = makeButton(resumeIcon, buttonX, buttonY);
         JButton restartBtn = makeButton(restartIcon, buttonX, buttonY);
@@ -438,7 +438,7 @@ public class GamePanel extends BasePanel {
         
 
         // Re-start the timer where it left off
-        countdownTimer = new javax.swing.Timer(1000, e -> tick());
+        countdownTimer = new Timer(1000, e -> tick());
         countdownTimer.start();
         gameState.setRunning(true);
     }
@@ -634,7 +634,7 @@ public class GamePanel extends BasePanel {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.drawImage(
-                    new ImageIcon("resources/images/wood_processed.png").getImage(),
+                    new ImageIcon("resources/images/gameOverBoard.png").getImage(),
                     0, 0, getWidth(), getHeight(), null
                 );
             }
@@ -729,7 +729,7 @@ public class GamePanel extends BasePanel {
         gameOverOverlay.repaint();
         gameOverOverlay.requestFocusInWindow();
 
-        gameOverTitle.setFont(new Font("Monospaced", Font.BOLD, won ? 37 : 37));
+        gameOverTitle.setFont(new Font("Monospaced", Font.BOLD, won ? 50 : 50));
 
         if (won) {
             gameOverTitle.setForeground(new Color(0, 220, 0)); // GREEN WIN
@@ -755,8 +755,9 @@ public class GamePanel extends BasePanel {
             
         }
 
+
         // TEXT AREA styling directly here (no shared style vars)
-        gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 35));
+        gameOverStats.setFont(new Font("Monospaced", Font.PLAIN, 40));
         gameOverStats.setForeground(Color.BLACK);
         gameOverStats.setText(msg);
     }
