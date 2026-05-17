@@ -73,6 +73,7 @@ public class GamePanel extends BasePanel {
     private Timer delay;
     
     //Pause Menu Components 
+    private JPanel mainContent = new JPanel();
     private JPanel pauseOverlay;
     private boolean isPaused = false;
 
@@ -104,7 +105,7 @@ public class GamePanel extends BasePanel {
     
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
-    private static final int GAME_TIME   = 1;
+    private static final int GAME_TIME   = 10;
     private static final int STORM_MAX = 45; 
     private static final int STORM_MIN = 15;
     private int randomStormTime; 
@@ -139,7 +140,7 @@ public class GamePanel extends BasePanel {
         JLayeredPane layeredPane = new JLayeredPane();
         
         // Creates Main Content
-        JPanel mainContent = new JPanel(new BorderLayout(8, 8))
+        mainContent = new JPanel(new BorderLayout(8, 8))
         {
             
             @Override
@@ -234,7 +235,7 @@ public class GamePanel extends BasePanel {
         hud.setBackground(new Color(0, 0, 0, 0));
         hud.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
 
-        Font f = new Font("SansSerif", Font.BOLD, 55);
+        Font f = new Font("Monospaced", Font.BOLD, 55);
 
         timerLabel   = new JLabel("Timer: " + GAME_TIME, SwingConstants.CENTER);
         weatherLabel = new JLabel("\u2600 Sunny",SwingConstants.CENTER);
@@ -244,6 +245,7 @@ public class GamePanel extends BasePanel {
             l.setFont(f);
             hud.add(l);
         }
+        repaint();
         return hud;
     }
 
@@ -267,7 +269,7 @@ public class GamePanel extends BasePanel {
 
         for (int i = 0; i < GRID_SIZE; i++) {
             JButton btn = new JButton();
-            btn.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 26));
+            btn.setFont(new Font("Monospaced", Font.PLAIN, 26));
         
             btn.setOpaque(true);
             btn.setBorderPainted(true);
@@ -359,7 +361,7 @@ public class GamePanel extends BasePanel {
         JButton quitBtn    = makeButton(exitIcon, buttonX, buttonY);
          
         for (JButton btn : new JButton[]{resumeBtn, restartBtn, quitBtn}) {
-            btn.setFont(new Font("SansSerif", Font.BOLD, 18));
+            btn.setFont(new Font("Monospaced", Font.BOLD, 18));
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
             btn.setFocusPainted(false);
             btn.setMaximumSize(new Dimension(buttonX, buttonY));
@@ -529,6 +531,8 @@ public class GamePanel extends BasePanel {
     private void tick() {
         gameState.decrementTime();
         timerLabel.setText("Timer: " + gameState.getTimeRemaining());
+        mainContent.repaint();
+        
 
         // trigger storm once at STORM_TIME
         if (!stormTriggered && gameState.getTimeRemaining() == randomStormTime) {
@@ -695,7 +699,7 @@ public class GamePanel extends BasePanel {
 
         // ── TITLE ──
         gameOverTitle = new JLabel("", SwingConstants.CENTER);
-        gameOverTitle.setFont(new Font("Sans Serif", Font.BOLD, 200));
+        gameOverTitle.setFont(new Font("Monospaced", Font.BOLD, 200));
         gameOverTitle.setForeground(Color.BLACK);
 
         // ── STATS ──
@@ -792,7 +796,7 @@ public class GamePanel extends BasePanel {
         String msg =
                 "Moves: " + player.getMoves() +
                 "\nScore: " + player.getScore() +
-                "\nTime Left: " + gameState.getTimeRemaining();
+                "\nTime Left: " + gameState.getTimeRemaining() + "\n";
 
         if (isNewHighScore) {
             msg += "\nNEW HIGH SCORE!";
