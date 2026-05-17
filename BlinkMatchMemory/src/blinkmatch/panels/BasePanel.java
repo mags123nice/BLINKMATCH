@@ -1,5 +1,6 @@
 package blinkmatch.panels;
 
+
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -11,6 +12,7 @@ import java.awt.Toolkit;
 // import java.awt.Graphics;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+// import javax.swing.JFrame;
 // import javax.swing.JLabel;
 import javax.swing.JPanel;
 // import javax.swing.SwingConstants;
@@ -78,20 +80,9 @@ public abstract class BasePanel extends JPanel {
         return btn;
     }
 
-    // public void setConstantBackground(String imagePath) {
-    // this.backgroundImage = new ImageIcon(imagePath).getImage();
-    // this.repaint(); // Forces the panel to refresh and show the new image immediately
-    // }
-
-    // @Override
-    // protected void paintComponent(Graphics g) {
-    // super.paintComponent(g); // Paints standard background color first
     
-    // // If the method was called and an image exists, draw it to fill the screen
-    // if (backgroundImage != null) {
-    //     g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-    // }
-    // }
+
+    
 
 
         protected Color bgColor() { return new Color(170, 205, 255); }

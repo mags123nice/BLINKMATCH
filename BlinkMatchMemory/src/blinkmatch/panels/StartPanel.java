@@ -54,6 +54,7 @@ public class StartPanel extends BasePanel{
         ImageIcon startIcon = new ImageIcon("resources/images/startIcon.png");
         ImageIcon helpIcon = new ImageIcon("resources/images/helpIcon.png");
         ImageIcon quitIcon = new ImageIcon("resources/images/exitIcon.png");
+        ImageIcon creditIcon = new ImageIcon("resources/images/credits.png");
         
 
         // --- title ---
@@ -79,6 +80,7 @@ public class StartPanel extends BasePanel{
         JButton startBtn =  makeButton(startIcon, smolSizeX, smolSizeY);
         JButton quitButton =  makeButton(quitIcon,  smolSizeX, smolSizeY);
         JButton helpBtn  = makeButton(helpIcon,  smolSizeX, smolSizeY);
+        JButton creditBtn  = makeButton(creditIcon,  smolSizeX, smolSizeY);
 
         startBtn.addActionListener(e -> {
             SoundPlayer.playClickEffect();
@@ -94,6 +96,10 @@ public class StartPanel extends BasePanel{
         quitButton.addActionListener(e -> {
             SoundPlayer.playClickEffect();
             System.exit(0);
+        });
+        creditBtn.addActionListener(e -> {
+            SoundPlayer.playClickEffect();
+            cardLayout.show(GameWindow.container, "CREDITS");
         });
 
         // keyboard: S = start
@@ -119,6 +125,10 @@ public class StartPanel extends BasePanel{
         buttonRow.add(Box.createHorizontalStrut(30)); 
         
         buttonRow.add(quitButton);
+
+        buttonRow.add(Box.createHorizontalStrut(30)); 
+        
+        buttonRow.add(creditBtn);
         
         buttonRow.add(Box.createHorizontalGlue());
 

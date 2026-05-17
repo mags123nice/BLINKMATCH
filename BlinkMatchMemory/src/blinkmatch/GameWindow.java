@@ -4,6 +4,7 @@ import blinkmatch.panels.BasePanel;
 import blinkmatch.panels.GamePanel;
 import blinkmatch.panels.HelpPanel;
 import blinkmatch.panels.StartPanel;
+import blinkmatch.panels.CreditPanel;
 import java.awt.CardLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -24,6 +25,7 @@ public class GameWindow extends JFrame{
     private final BasePanel startPanel;
     private final GamePanel gamePanel;   
     private final BasePanel helpPanel;
+    private final CreditPanel creditPanel;
 
     private BasePanel currentPanel;
 
@@ -42,10 +44,12 @@ public class GameWindow extends JFrame{
         startPanel = new StartPanel(cardLayout);
         gamePanel  = new GamePanel(cardLayout);
         helpPanel  = new HelpPanel(cardLayout);
+        creditPanel= new CreditPanel(cardLayout);
 
         container.add(startPanel, "START");
         container.add(gamePanel,  "GAME");
         container.add(helpPanel,  "HELP");
+        container.add(creditPanel, "CREDITS");
 
         
 
@@ -70,6 +74,8 @@ public class GameWindow extends JFrame{
             case "HELP":
                 currentPanel = helpPanel;
                 break;
+            case "CREDITS":
+                currentPanel=creditPanel;
             default:
                 throw new IllegalArgumentException("Unknown panel: " + name);
         }
