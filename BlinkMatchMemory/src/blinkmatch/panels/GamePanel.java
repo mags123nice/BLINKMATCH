@@ -125,6 +125,7 @@ public class GamePanel extends BasePanel {
         
         this.player     = new Player("Player 1");
         this.gameState  = new GameState(GAME_TIME, TOTAL_PAIRS);
+        setBackground(new Color(0, 0, 255, 255));
 
         initComponents();
     }
@@ -138,7 +139,22 @@ public class GamePanel extends BasePanel {
         JLayeredPane layeredPane = new JLayeredPane();
         
         // Creates Main Content
-        JPanel mainContent = new JPanel(new BorderLayout(8, 8));
+        JPanel mainContent = new JPanel(new BorderLayout(8, 8))
+        {
+            
+            @Override
+            public void paintComponent(Graphics g)
+            {
+                    
+                super.paintComponent(g);
+                g.drawImage(
+                    new ImageIcon("resources/images/areaBackground.jpg").getImage(),
+                    0, 0, getWidth(), getHeight(), null
+                );
+            }
+                
+            
+        };
         mainContent.setBackground(bgColor());
         mainContent.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
         mainContent.add(buildHUD(), BorderLayout.NORTH);
@@ -211,8 +227,11 @@ public class GamePanel extends BasePanel {
     // ── UI builders ─────────────────────────────────────────────────────────
 
     private JPanel buildHUD() {
-        JPanel hud = new JPanel(new GridLayout(1, 3, 4, 0));
-        hud.setBackground(bgColor());
+        JPanel hud = new JPanel(new GridLayout(1, 3, 4, 0))
+        {
+            
+        };
+        hud.setBackground(new Color(0, 0, 0, 0));
         hud.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
 
         Font f = new Font("SansSerif", Font.BOLD, 55);
@@ -271,18 +290,11 @@ public class GamePanel extends BasePanel {
     private JPanel buildButtons() {
         JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10)){
 
-            @Override
-            public void paintComponent(Graphics g)
-            {
-
-                g.drawImage(
-                        new ImageIcon("resources/images/areaBackground.jpg").getImage(),0,0,getWidth(), getHeight(),null);
-            } 
-
         };
-        south.setBackground(bgColor());
+        //south.setBackground(bgColor());
 
 
+        
 
         ImageIcon pauseIcon = new ImageIcon("resources/images/pauseIcon3.png");        
         pauseBtn = makeButton(pauseIcon, 150, 100);
@@ -299,6 +311,7 @@ public class GamePanel extends BasePanel {
         });
 
         south.add(pauseBtn);
+        south.setBackground(new Color(0, 0, 0, 0));
         return south;
     }
     
@@ -729,11 +742,12 @@ public class GamePanel extends BasePanel {
 
         panel.add(restartBtn);
         panel.add(exitBtn);
+        panel.setBackground(new Color(0, 0, 0, 0));
         
 
 
 
-        panel.setBackground(new Color(0, 0, 0, 0));
+        //panel.setBackground(new Color(0, 0, 0, 0));
         overlay.add(panel, gbc);
         //overlay.add(Box.createVerticalStrut(75), gbc);
         
@@ -814,7 +828,7 @@ public class GamePanel extends BasePanel {
     {
         super.paintComponent(g);
         g.drawImage(
-            new ImageIcon("resources/images/wood_processed.png").getImage(),
+            new ImageIcon("resources/images/areaBackground.jpg").getImage(),
             0, 0, getWidth(), getHeight(), null
         );
 
