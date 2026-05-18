@@ -1,6 +1,8 @@
 package blinkmatch.panels;
 
-import blinkmatch.*;
+// import blinkmatch.*;
+import blinkmatch.GameWindow;
+import blinkmatch.SoundPlayer;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Graphics;

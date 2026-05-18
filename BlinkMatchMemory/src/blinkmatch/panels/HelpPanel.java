@@ -12,7 +12,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import blinkmatch.*;
+// import blinkmatch.*;
+import blinkmatch.GameWindow;
+import blinkmatch.SoundPlayer;
 
 public class HelpPanel extends BasePanel implements Runnable {
     
