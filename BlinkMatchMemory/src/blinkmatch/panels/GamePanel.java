@@ -317,7 +317,7 @@ public class GamePanel extends BasePanel {
         pauseBtn.addActionListener(e -> {
             pauseOverlay.repaint();
             ImageIcon psBtn3  =  new ImageIcon("resources/images/pauseIcon2.png");
-            Dimension pauseButtonDimenstion = pauseBtn.getPreferredSize();
+            // Dimension pauseButtonDimenstion = pauseBtn.getPreferredSize();
             pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(pauseBtnSize, pauseBtnSize, Image.SCALE_SMOOTH));
             pauseBtn.repaint();
             pauseBtn.setIcon(pausePicture);
