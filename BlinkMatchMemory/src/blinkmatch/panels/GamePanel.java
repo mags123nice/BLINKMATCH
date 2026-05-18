@@ -105,7 +105,7 @@ public class GamePanel extends BasePanel {
     
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
-    private static final int GAME_TIME   = 10000;
+    private static final int GAME_TIME   = 60;
     private static final int STORM_MAX = 45; 
     private static final int STORM_MIN = 15;
     private int randomStormTime; 
@@ -123,9 +123,12 @@ public class GamePanel extends BasePanel {
     //
 
     private int pauseBtnSize = 60;
-    public GamePanel(CardLayout cardLayout) {
+    private GameWindow window;
+
+    public GamePanel(CardLayout cardLayout,  GameWindow window) {
         super(cardLayout);
-        
+        this.window = window;
+
         this.player     = new Player("Player 1");
         this.gameState  = new GameState(GAME_TIME, TOTAL_PAIRS);
         setBackground(new Color(0, 0, 255, 255));
@@ -218,11 +221,18 @@ public class GamePanel extends BasePanel {
             }
         });
 
+   
+
         repaint();
     }
 
     @Override
-    public void onEnter() { }
+    public void onEnter() {             
+        System.out.println("Hello there");
+        startGame();
+        resumeGame(); 
+        restartGame();  
+    }
 
     @Override
     public void onExit()  { stopTimer(); }
@@ -386,7 +396,8 @@ public class GamePanel extends BasePanel {
             
             onExit();
             overlay.setVisible(false);
-            cardLayout.show(GameWindow.container, "START");
+            window.showPanel("START");
+            // cardLayout.show(GameWindow.container, "START");
         });
 
         overlay.add(resumeBtn, gbc);
@@ -418,7 +429,9 @@ public class GamePanel extends BasePanel {
             { 
                 onExit();
                 SoundPlayer.playClickEffect();
-                cardLayout.show(GameWindow.container, "START");
+                window.showPanel("START");
+
+                // cardLayout.show(GameWindow.container, "START");
             }
             
         });
@@ -737,7 +750,9 @@ public class GamePanel extends BasePanel {
             resumeGame();
             onExit();
             overlay.setVisible(false);
-            cardLayout.show(GameWindow.container, "START");
+            window.showPanel("START");
+
+            // cardLayout.show(GameWindow.container, "START");
         });
 
         // ── ADD IN ORDER ──
@@ -807,7 +822,7 @@ public class GamePanel extends BasePanel {
                 "\nTime Left: " + gameState.getTimeRemaining() + "\n";
 
         if (isNewHighScore) {
-            msg += "\nNEW HIGH SCORE!";
+            msg += "NEW HIGH SCORE!\n";
             
         }
 

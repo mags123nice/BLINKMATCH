@@ -24,10 +24,14 @@ public class StartPanel extends BasePanel{
 
 
     private Image bg = null;
-    
+    private final GameWindow window;
 
-    public StartPanel(CardLayout cardLayout) {
+    public JLabel highScore;
+        
+
+    public StartPanel(CardLayout cardLayout, GameWindow window) {
         super (cardLayout);
+        this.window = window;
         startPanel();
     }
 
@@ -65,7 +69,7 @@ public class StartPanel extends BasePanel{
         // subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         GameWindow.loadHighScore();
-        JLabel highScore = new JLabel("Current Highscore: " + GameWindow.highScore + "!" );
+         highScore = new JLabel("Current Highscore: " + GameWindow.highScore + "!" );
         highScore.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
         highScore.setForeground(new Color(150, 75, 0, 255));
         
@@ -85,7 +89,8 @@ public class StartPanel extends BasePanel{
         startBtn.addActionListener(e -> {
             SoundPlayer.playClickEffect();
             onExit();
-            cardLayout.show(GameWindow.container, "GAME");
+            window.showPanel("GAME");
+            // cardLayout.show(GameWindow.container, "GAME");
         });
         helpBtn.addActionListener(e -> {
             SoundPlayer.playClickEffect();
@@ -105,6 +110,7 @@ public class StartPanel extends BasePanel{
         // keyboard: S = start
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('S'), "start");
         getActionMap().put("start", new AbstractAction() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 onExit();
                 SoundPlayer.playClickEffect();
@@ -157,6 +163,11 @@ public class StartPanel extends BasePanel{
 
     }
 
-    @Override public void onEnter() {  }
+    @Override public void onEnter() { 
+
+        GameWindow.loadHighScore();
+        highScore.setText("Current Highscore: " + GameWindow.highScore + "!" );
+    
+     }
     @Override public void onExit()  {  }
 }

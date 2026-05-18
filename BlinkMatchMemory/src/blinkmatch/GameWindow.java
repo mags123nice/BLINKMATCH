@@ -41,8 +41,8 @@ public class GameWindow extends JFrame{
         add(container);
         
         //Builds Panels
-        startPanel = new StartPanel(cardLayout);
-        gamePanel  = new GamePanel(cardLayout);
+        startPanel = new StartPanel(cardLayout, this);
+        gamePanel  = new GamePanel(cardLayout,this);
         helpPanel  = new HelpPanel(cardLayout);
         creditPanel= new CreditPanel(cardLayout);
 

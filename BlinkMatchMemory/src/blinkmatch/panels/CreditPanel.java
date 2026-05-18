@@ -87,10 +87,10 @@ public class CreditPanel extends BasePanel {
 
         // Back Button Setup
         ImageIcon backIcon = new ImageIcon("resources/images/backIcon.png");
-        JButton backBtn = makeButton(backIcon, 150, 75);
-        backBtn.setContentAreaFilled(false);
-        backBtn.setBorderPainted(false);
-        backBtn.setOpaque(false);
+
+        JButton backBtn = makeButton(backIcon, 175, 75);
+        backBtn.setBackground(new Color(0,0,0,0));
+
         backBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         backBtn.addActionListener(e -> {
             SoundPlayer.playClickEffect();
