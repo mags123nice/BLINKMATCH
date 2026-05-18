@@ -228,7 +228,6 @@ public class GamePanel extends BasePanel {
 
     @Override
     public void onEnter() {             
-        System.out.println("Hello there");
         startGame();
         resumeGame(); 
         restartGame();  

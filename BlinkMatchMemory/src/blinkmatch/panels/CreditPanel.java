@@ -37,7 +37,7 @@ public class CreditPanel extends BasePanel {
     }
 
     private void loadProperties() {
-        // Safe path parsing; adjust path if your config is straight under root or src
+
         try (FileInputStream fis = new FileInputStream("config/app.properties")) {
             props.load(fis);
         } catch (IOException e) {
@@ -55,26 +55,26 @@ public class CreditPanel extends BasePanel {
 
     @Override
 public void initComponents() {
-    // 1. Change the main panel layout to GridBagLayout for proportional distribution
+
     setLayout(new GridBagLayout());
     setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
     
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.fill = GridBagConstraints.BOTH;
 
-    // ---- STEP A: THE TOP SPACER (Pushes everything down proportionally) ----
+
     JPanel topSpacer = new JPanel();
     topSpacer.setOpaque(false);
     gbc.gridy = 0;
     gbc.weightx = 1.0;
-    gbc.weighty = 2.0; 
+    gbc.weighty = 2.0; //adjusts to push dev credits down
     add(topSpacer, gbc);
 
     JPanel horizontalLeftSpacer = new JPanel();
     horizontalLeftSpacer.setOpaque(false);
-    gbc.gridx = 0;      // Allocates the first column track to this spacer
-    gbc.gridy = 1;      // Places it inline with your developer grid row
-    gbc.weightx = 0.20; // Allocates 20% of the total window width to empty space on the left!
+    gbc.gridx = 0;     
+    gbc.gridy = 1;     
+    gbc.weightx = 0.20; // adjust to push dev credits horizontally
     gbc.weighty = 0.0;
     add(horizontalLeftSpacer, gbc);
 
@@ -97,13 +97,13 @@ public void initComponents() {
     developerGrid.setOpaque(false);
     buildDeveloperUiCards(developerGrid);
     
-    gbc.gridx = 1;      // CHANGED: Moves the grid to the right of the horizontal spacer
-    gbc.gridy = 1;      // Stays on row index 1
+    gbc.gridx = 1;    
+    gbc.gridy = 1;      
     gbc.weightx = 0.80; // Claims the remaining 80% of window space
     gbc.weighty = 0.0;
     add(developerGrid, gbc);
 
-    // ---- STEP C: THE BOTTOM SPACER (Pushes up against the bottom controls) ----
+    //Adjust location of button button
     JPanel midSpacer = new JPanel();
     midSpacer.setOpaque(false);
     gbc.gridx = 1;      
@@ -112,7 +112,7 @@ public void initComponents() {
     gbc.weighty = 0.20; 
     add(midSpacer, gbc);
 
-    // ---- STEP D: BOTTOM SECTION (Version Title & Navigation) ----
+
     JPanel southPanel = new JPanel();
     southPanel.setOpaque(false);
     southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
@@ -158,7 +158,7 @@ public void initComponents() {
             String contribution = props.getProperty("dev." + i + ".contribution", "");
             String imagePath = props.getProperty("dev." + i + ".image", "resources/images/defaultAvatar.png");
 
-            // Creates individual card container
+            //Creates developer cards
             JPanel card = new JPanel(new BorderLayout(15, 0));
             card.setOpaque(false);
 
@@ -168,8 +168,7 @@ public void initComponents() {
             JLabel devLabel = new JLabel(new ImageIcon(scaledImg));
             card.add(devLabel, BorderLayout.WEST);
 
-            // Handle Text fields utilizing HTML styling for clean wrapping and underlines
-            // Swing JLabels natively parse HTML, making multi-line styling incredibly simple
+
             String htmlText = "<html>"
                     + "<font face='Monospaced' size='6' color='#333333'>" + github + "</font><br/>"
                     + "<u><font face='Monospaced' size='6' color='#000000'><b>" + name + "</b></font></u><br/>"
