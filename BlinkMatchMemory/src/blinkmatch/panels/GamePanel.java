@@ -121,6 +121,8 @@ public class GamePanel extends BasePanel {
     private static final Color COLOR_MATCHED    = new Color(144, 238, 144);
 
     //
+
+    private int pauseBtnSize = 60;
     public GamePanel(CardLayout cardLayout) {
         super(cardLayout);
         
@@ -299,17 +301,20 @@ public class GamePanel extends BasePanel {
         
 
         ImageIcon pauseIcon = new ImageIcon("resources/images/pauseIcon3.png");        
-        pauseBtn = makeButton(pauseIcon, 150, 100);
+        pauseBtn = makeButton(pauseIcon, pauseBtnSize, pauseBtnSize);
+        pauseBtn.setRolloverEnabled(false);
+
 
         pauseBtn.addActionListener(e -> {
+            pauseOverlay.repaint();
             ImageIcon psBtn3  =  new ImageIcon("resources/images/pauseIcon2.png");
             Dimension pauseButtonDimenstion = pauseBtn.getPreferredSize();
-            pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance((int)pauseButtonDimenstion.getWidth(),(int)pauseButtonDimenstion.getHeight(), Image.SCALE_SMOOTH));
-            pauseBtn.setIcon(pausePicture);
+            pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(pauseBtnSize, pauseBtnSize, Image.SCALE_SMOOTH));
             pauseBtn.repaint();
-
-         pauseGame();
-            pauseOverlay.repaint();
+            pauseBtn.setIcon(pausePicture);
+            pauseBtn.setContentAreaFilled(false);
+            pauseGame();
+            mainContent.repaint();
         });
 
         south.add(pauseBtn);
@@ -367,11 +372,14 @@ public class GamePanel extends BasePanel {
             btn.setMaximumSize(new Dimension(buttonX, buttonY));
         }
 
-        resumeBtn.addActionListener(e -> resumeGame());
+         resumeBtn.addActionListener(e -> resumeGame());
         
         restartBtn.addActionListener(e -> { 
+            pauseOverlay.repaint();
+            mainContent.repaint();
             resumeGame(); 
             restartGame(); 
+            pauseBtn.repaint();
         });
         
         quitBtn.addActionListener(e -> {
@@ -459,7 +467,7 @@ public class GamePanel extends BasePanel {
         
         ImageIcon psBtn3  =  new ImageIcon("resources/images/pauseIcon2.png");
         
-        pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(150,100, Image.SCALE_SMOOTH));
+        pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(pauseBtnSize,pauseBtnSize, Image.SCALE_SMOOTH));
         pauseBtn.setIcon(pausePicture);
         pauseBtn.repaint();
 
@@ -477,7 +485,7 @@ public class GamePanel extends BasePanel {
         
         ImageIcon psBtn3  =  new ImageIcon("resources/images/pauseIcon3.png");
         
-        pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(150,100, Image.SCALE_SMOOTH));
+        pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(50,50, Image.SCALE_SMOOTH));
         pauseBtn.setIcon(pausePicture);
         pauseBtn.repaint();
         
