@@ -11,6 +11,9 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Graphics;
+import java.awt.GridBagLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -51,98 +54,139 @@ public class CreditPanel extends BasePanel {
     }
 
     @Override
-    public void initComponents() {
-        setLayout(new BorderLayout(10, 15));
-        setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
-        JPanel gridWrapper = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 20));
-        gridWrapper.setOpaque(false);
-        gridWrapper.setBorder(BorderFactory.createEmptyBorder(500, 0, 0, 0));
+public void initComponents() {
+    // 1. Change the main panel layout to GridBagLayout for proportional distribution
+    setLayout(new GridBagLayout());
+    setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+    
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.BOTH;
 
-        
+    // ---- STEP A: THE TOP SPACER (Pushes everything down proportionally) ----
+    JPanel topSpacer = new JPanel();
+    topSpacer.setOpaque(false);
+    gbc.gridy = 0;
+    gbc.weightx = 1.0;
+    gbc.weighty = 2.0; 
+    add(topSpacer, gbc);
 
-        // 2. CENTER SECTION: 2x2 Grid of Developers
-        JPanel developerGrid = new JPanel(new GridLayout(2, 2, 40, 30));
-        developerGrid.setOpaque(false);
-        developerGrid.setPreferredSize(new java.awt.Dimension(800, 300));
-        buildDeveloperUiCards(developerGrid);
-        gridWrapper.add(developerGrid);
-        add(gridWrapper, BorderLayout.CENTER);
-        
-        
+    JPanel horizontalLeftSpacer = new JPanel();
+    horizontalLeftSpacer.setOpaque(false);
+    gbc.gridx = 0;      // Allocates the first column track to this spacer
+    gbc.gridy = 1;      // Places it inline with your developer grid row
+    gbc.weightx = 0.20; // Allocates 20% of the total window width to empty space on the left!
+    gbc.weighty = 0.0;
+    add(horizontalLeftSpacer, gbc);
 
-        // 3. BOTTOM SECTION: Version Title & Navigation
-        JPanel southPanel = new JPanel();
-        southPanel.setOpaque(false);
-        southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
-        southPanel.setBackground(bgColor());
+    // ---- STEP B: THE DEVELOPER GRID (Stays small and responsive) ----
+    JPanel developerGrid = new JPanel(new GridLayout(2, 2, 40, 50)) {
+        @Override
+        public Dimension getPreferredSize() {
+            if (getParent() != null) {
+                int dynamicWidth = (int) (getParent().getWidth() * 0.80);
+                int dynamicHeight = (int) (getParent().getHeight() * 0.45);
+                
+                dynamicWidth = Math.max(dynamicWidth, 900);
+                dynamicHeight = Math.max(dynamicHeight, 280);
+                
+                return new Dimension(dynamicWidth, dynamicHeight);
+            }
+            return new Dimension(900, 450);
+        }
+    };
+    developerGrid.setOpaque(false);
+    buildDeveloperUiCards(developerGrid);
+    
+    gbc.gridx = 1;      // CHANGED: Moves the grid to the right of the horizontal spacer
+    gbc.gridy = 1;      // Stays on row index 1
+    gbc.weightx = 0.80; // Claims the remaining 80% of window space
+    gbc.weighty = 0.0;
+    add(developerGrid, gbc);
 
-        // App Name and Version Text Label
-        String gameName = props.getProperty("app.name", "BLINK MATCH MEMORY");
-        String gameVersion = props.getProperty("app.version", "1.0.0");
-        JLabel versionLabel = new JLabel(gameName + " (v" + gameVersion + ")", JLabel.CENTER);
-        versionLabel.setFont(new Font("Monospaced", Font.BOLD, 16));
-        versionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        versionLabel.setForeground(Color.BLACK); 
-        southPanel.add(versionLabel);
+    // ---- STEP C: THE BOTTOM SPACER (Pushes up against the bottom controls) ----
+    JPanel midSpacer = new JPanel();
+    midSpacer.setOpaque(false);
+    gbc.gridx = 1;      
+    gbc.gridy = 2;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.20; 
+    add(midSpacer, gbc);
 
-        // Back Button Setup
-        ImageIcon backIcon = new ImageIcon("resources/images/backIcon.png");
+    // ---- STEP D: BOTTOM SECTION (Version Title & Navigation) ----
+    JPanel southPanel = new JPanel();
+    southPanel.setOpaque(false);
+    southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
 
-        JButton backBtn = makeButton(backIcon, 175, 75);
-        backBtn.setBackground(new Color(0,0,0,0));
+    String gameName = props.getProperty("app.name", "BLINK MATCH MEMORY");
+    String gameVersion = props.getProperty("app.version", "1.0.0");
+    JLabel versionLabel = new JLabel(gameName + " (v" + gameVersion + ")", JLabel.CENTER);
+    versionLabel.setFont(new Font("Monospaced", Font.BOLD, 16));
+    versionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    versionLabel.setForeground(Color.BLACK); 
+    southPanel.add(versionLabel);
+    
 
-        backBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        backBtn.addActionListener(e -> {
-            SoundPlayer.playClickEffect();
-            onExit();
-            cardLayout.show(GameWindow.container, "START");
-        });
+    ImageIcon backIcon = new ImageIcon("resources/images/backIcon.png");
+    JButton backBtn = makeButton(backIcon, 175, 75);
+    backBtn.setContentAreaFilled(false);
+    backBtn.setBorderPainted(false);
+    backBtn.setOpaque(false);
+    backBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+    backBtn.addActionListener(e -> {
+        SoundPlayer.playClickEffect();
+        onExit();
+        cardLayout.show(GameWindow.container, "START");
+    });
+    southPanel.add(backBtn);
 
-        southPanel.add(backBtn);
-        add(southPanel, BorderLayout.SOUTH);
-    }
+    gbc.gridx = 1;      // CHANGED from 0 to 1
+    gbc.gridy = 3;
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.15; 
+    add(southPanel, gbc);
+}
 
     private void buildDeveloperUiCards(JPanel targetGrid) {
         int i = 1;
         while (true) {
             String name = props.getProperty("dev." + i + ".name");
             if (name == null) {
-                break; // Stop loop when out of developers
+                break; 
             }
 
             String github = props.getProperty("dev." + i + ".github", "");
             String contribution = props.getProperty("dev." + i + ".contribution", "");
             String imagePath = props.getProperty("dev." + i + ".image", "resources/images/defaultAvatar.png");
 
-            // Create individual card container
+            // Creates individual card container
             JPanel card = new JPanel(new BorderLayout(15, 0));
             card.setOpaque(false);
 
-            // Handle Avatar Image (Scaled to 100x100 pixels)
-            ImageIcon avatarRaw = new ImageIcon(imagePath);
-            Image scaledImg = avatarRaw.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-            JLabel avatarLabel = new JLabel(new ImageIcon(scaledImg));
-            card.add(avatarLabel, BorderLayout.WEST);
+            // Adjust Developer images
+            ImageIcon devRaw = new ImageIcon(imagePath);
+            Image scaledImg = devRaw.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            JLabel devLabel = new JLabel(new ImageIcon(scaledImg));
+            card.add(devLabel, BorderLayout.WEST);
 
             // Handle Text fields utilizing HTML styling for clean wrapping and underlines
             // Swing JLabels natively parse HTML, making multi-line styling incredibly simple
             String htmlText = "<html>"
-                    + "<font face='Monospaced' size='4' color='#333333'>" + github + "</font><br/>"
-                    + "<u><font face='Monospaced' size='5' color='#000000'><b>" + name + "</b></font></u><br/>"
-                    + "<font face='Monospaced' size='4' color='#555555'>" + contribution + "</font>"
+                    + "<font face='Monospaced' size='6' color='#333333'>" + github + "</font><br/>"
+                    + "<u><font face='Monospaced' size='6' color='#000000'><b>" + name + "</b></font></u><br/>"
+                    + "<font face='Monospaced' size='6' color='#555555'>" + contribution + "</font>"
                     + "</html>";
 
             JLabel infoLabel = new JLabel(htmlText);
             card.add(infoLabel, BorderLayout.CENTER);
 
-            // Add single card to main 2x2 grid
+
             targetGrid.add(card);
             i++;
         }
         repaint();
     }
 
-
+    
 
     @Override public void onEnter() {}
     @Override public void onExit()  {}
