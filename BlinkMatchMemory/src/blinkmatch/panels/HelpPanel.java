@@ -49,7 +49,7 @@ public class HelpPanel extends BasePanel implements Runnable {
         ImageIcon backIcon = new ImageIcon("resources/images/backIcon.png");
 
         //MAKE ICONIMAGE
-        JButton backBtn = makeButton(backIcon, 150, 75);
+        JButton backBtn = makeButton(backIcon, 175, 75);
         backBtn.setBackground(new Color(0,0,0,0));
 
         backBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
