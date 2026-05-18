@@ -73,6 +73,7 @@ public class GamePanel extends BasePanel {
     private Timer delay;
     
     //Pause Menu Components 
+    private JPanel mainContent = new JPanel();
     private JPanel pauseOverlay;
     private boolean isPaused = false;
 
@@ -104,7 +105,7 @@ public class GamePanel extends BasePanel {
     
     private static final int TOTAL_PAIRS = 8;
     private static final int GRID_SIZE   = TOTAL_PAIRS * 2;
-    private static final int GAME_TIME   = 1;
+    private static final int GAME_TIME   = 10000;
     private static final int STORM_MAX = 45; 
     private static final int STORM_MIN = 15;
     private int randomStormTime; 
@@ -120,6 +121,8 @@ public class GamePanel extends BasePanel {
     private static final Color COLOR_MATCHED    = new Color(144, 238, 144);
 
     //
+
+    private int pauseBtnSize = 60;
     public GamePanel(CardLayout cardLayout) {
         super(cardLayout);
         
@@ -139,7 +142,7 @@ public class GamePanel extends BasePanel {
         JLayeredPane layeredPane = new JLayeredPane();
         
         // Creates Main Content
-        JPanel mainContent = new JPanel(new BorderLayout(8, 8))
+        mainContent = new JPanel(new BorderLayout(8, 8))
         {
             
             @Override
@@ -234,7 +237,7 @@ public class GamePanel extends BasePanel {
         hud.setBackground(new Color(0, 0, 0, 0));
         hud.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
 
-        Font f = new Font("SansSerif", Font.BOLD, 55);
+        Font f = new Font("Monospaced", Font.BOLD, 55);
 
         timerLabel   = new JLabel("Timer: " + GAME_TIME, SwingConstants.CENTER);
         weatherLabel = new JLabel("\u2600 Sunny",SwingConstants.CENTER);
@@ -244,6 +247,7 @@ public class GamePanel extends BasePanel {
             l.setFont(f);
             hud.add(l);
         }
+        repaint();
         return hud;
     }
 
@@ -267,7 +271,7 @@ public class GamePanel extends BasePanel {
 
         for (int i = 0; i < GRID_SIZE; i++) {
             JButton btn = new JButton();
-            btn.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 26));
+            btn.setFont(new Font("Monospaced", Font.PLAIN, 26));
         
             btn.setOpaque(true);
             btn.setBorderPainted(true);
@@ -297,17 +301,20 @@ public class GamePanel extends BasePanel {
         
 
         ImageIcon pauseIcon = new ImageIcon("resources/images/pauseIcon3.png");        
-        pauseBtn = makeButton(pauseIcon, 150, 100);
+        pauseBtn = makeButton(pauseIcon, pauseBtnSize, pauseBtnSize);
+        pauseBtn.setRolloverEnabled(false);
+
 
         pauseBtn.addActionListener(e -> {
+            pauseOverlay.repaint();
             ImageIcon psBtn3  =  new ImageIcon("resources/images/pauseIcon2.png");
             Dimension pauseButtonDimenstion = pauseBtn.getPreferredSize();
-            pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance((int)pauseButtonDimenstion.getWidth(),(int)pauseButtonDimenstion.getHeight(), Image.SCALE_SMOOTH));
-            pauseBtn.setIcon(pausePicture);
+            pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(pauseBtnSize, pauseBtnSize, Image.SCALE_SMOOTH));
             pauseBtn.repaint();
-
-         pauseGame();
-            pauseOverlay.repaint();
+            pauseBtn.setIcon(pausePicture);
+            pauseBtn.setContentAreaFilled(false);
+            pauseGame();
+            mainContent.repaint();
         });
 
         south.add(pauseBtn);
@@ -359,17 +366,20 @@ public class GamePanel extends BasePanel {
         JButton quitBtn    = makeButton(exitIcon, buttonX, buttonY);
          
         for (JButton btn : new JButton[]{resumeBtn, restartBtn, quitBtn}) {
-            btn.setFont(new Font("SansSerif", Font.BOLD, 18));
+            btn.setFont(new Font("Monospaced", Font.BOLD, 18));
             btn.setAlignmentX(Component.CENTER_ALIGNMENT);
             btn.setFocusPainted(false);
             btn.setMaximumSize(new Dimension(buttonX, buttonY));
         }
 
-        resumeBtn.addActionListener(e -> resumeGame());
+         resumeBtn.addActionListener(e -> resumeGame());
         
         restartBtn.addActionListener(e -> { 
+            pauseOverlay.repaint();
+            mainContent.repaint();
             resumeGame(); 
             restartGame(); 
+            pauseBtn.repaint();
         });
         
         quitBtn.addActionListener(e -> {
@@ -457,7 +467,7 @@ public class GamePanel extends BasePanel {
         
         ImageIcon psBtn3  =  new ImageIcon("resources/images/pauseIcon2.png");
         
-        pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(150,100, Image.SCALE_SMOOTH));
+        pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(pauseBtnSize,pauseBtnSize, Image.SCALE_SMOOTH));
         pauseBtn.setIcon(pausePicture);
         pauseBtn.repaint();
 
@@ -475,7 +485,7 @@ public class GamePanel extends BasePanel {
         
         ImageIcon psBtn3  =  new ImageIcon("resources/images/pauseIcon3.png");
         
-        pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(150,100, Image.SCALE_SMOOTH));
+        pausePicture = new ImageIcon(psBtn3.getImage().getScaledInstance(50,50, Image.SCALE_SMOOTH));
         pauseBtn.setIcon(pausePicture);
         pauseBtn.repaint();
         
@@ -529,6 +539,8 @@ public class GamePanel extends BasePanel {
     private void tick() {
         gameState.decrementTime();
         timerLabel.setText("Timer: " + gameState.getTimeRemaining());
+        mainContent.repaint();
+        
 
         // trigger storm once at STORM_TIME
         if (!stormTriggered && gameState.getTimeRemaining() == randomStormTime) {
@@ -695,7 +707,7 @@ public class GamePanel extends BasePanel {
 
         // ── TITLE ──
         gameOverTitle = new JLabel("", SwingConstants.CENTER);
-        gameOverTitle.setFont(new Font("Sans Serif", Font.BOLD, 200));
+        gameOverTitle.setFont(new Font("Monospaced", Font.BOLD, 200));
         gameOverTitle.setForeground(Color.BLACK);
 
         // ── STATS ──
@@ -792,7 +804,7 @@ public class GamePanel extends BasePanel {
         String msg =
                 "Moves: " + player.getMoves() +
                 "\nScore: " + player.getScore() +
-                "\nTime Left: " + gameState.getTimeRemaining();
+                "\nTime Left: " + gameState.getTimeRemaining() + "\n";
 
         if (isNewHighScore) {
             msg += "\nNEW HIGH SCORE!";

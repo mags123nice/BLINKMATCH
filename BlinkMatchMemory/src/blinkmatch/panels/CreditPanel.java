@@ -139,7 +139,20 @@ public class CreditPanel extends BasePanel {
             targetGrid.add(card);
             i++;
         }
+        repaint();
     }
+
+
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        g.drawImage(
+            new ImageIcon("resources/images/creditScreen.jpg").getImage(),
+            0, 0, getWidth(), getHeight(), null
+        );
+    }
+
 
     @Override public void onEnter() {}
     @Override public void onExit()  {}

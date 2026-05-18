@@ -67,7 +67,7 @@ public class StartPanel extends BasePanel{
         GameWindow.loadHighScore();
         JLabel highScore = new JLabel("Current Highscore: " + GameWindow.highScore + "!" );
         highScore.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
-        highScore.setForeground(Color.BLACK);
+        highScore.setForeground(new Color(150, 75, 0, 255));
         
         highScore.setAlignmentX(Component.CENTER_ALIGNMENT);
 
